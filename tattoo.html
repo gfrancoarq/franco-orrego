@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blackwork a gran escala en Santiago. Proyectos exclusivos para coleccionistas serios.">
+    <title>Blackwork | Franco Orrego Tattoo Studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SISTEMA DE DISEÑO TATTOO --- */
+        :root {
+            --color-primario: #00D4FF;
+            --color-exito: #06D6A0;
+            --color-alerta: #FF6B6B;
+            
+            --color-fondo: #0A0A0B;
+            --color-fondo-sec: #121214;
+            --color-borde: #252529;
+            
+            --color-titulo: #FFFFFF;
+            --color-texto: #E5E5E7;
+            --color-texto-sec: #A0A0A3;
+            
+            --sombra-lg: 0 20px 25px -5px rgba(0, 212, 255, 0.1);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0099FF 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 0;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .header-bar.scrolled {
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 50px;
+            background: var(--gradiente);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .header-cta {
+            padding: 10px 20px;
+            background: var(--gradiente);
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        /* --- TIPOGRAFÍA --- */
+        h1, h2, h3 {
+            font-weight: 700;
+            color: var(--color-titulo);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .highlight {
+            color: var(--color-primario);
+            font-weight: 600;
+        }
+
+        /* --- BOTONES --- */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-primary {
+            background: var(--gradiente);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--color-primario);
+            border: 2px solid var(--color-primario);
+        }
+
+        .cta-secondary:hover {
+            background: var(--color-primario);
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        linear-gradient(rgba(10, 10, 11, 0.95), rgba(10, 10, 11, 0.98)),
+                        url('assets/blackwork-hero.jpg') center/cover;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-texto-sec);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-philosophy {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* --- PROCESO --- */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+            background: var(--color-fondo-sec);
+            border-radius: 16px;
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primario);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--gradiente);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* --- GALERÍA DE IMÁGENES CON LIGHTBOX --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: var(--color-fondo-sec);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--color-borde);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: var(--sombra-lg);
+            border-color: var(--color-primario);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(transparent, rgba(10, 10, 11, 0.9));
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            color: var(--color-titulo);
+        }
+
+        .gallery-overlay p {
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+        }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 11, 0.98);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            font-size: 3rem;
+            color: var(--color-texto-sec);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            color: var(--color-primario);
+        }
+
+        .lightbox-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 212, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-nav button:hover {
+            background: var(--color-primario);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: -80px;
+        }
+
+        .lightbox-next {
+            right: -80px;
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: var(--color-texto);
+            font-size: 1rem;
+        }
+
+        /* --- DIRECTORIA --- */
+        .director-section {
+            background: var(--color-fondo-sec);
+        }
+
+        .director-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .director-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--color-primario);
+            box-shadow: var(--sombra-lg);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .director-container > div:first-child {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            margin: 1rem 0;
+            font-weight: 600;
+            color: var(--color-primario);
+        }
+
+        /* --- CTA FINAL --- */
+        .cta-final {
+            background: var(--gradiente);
+            text-align: center;
+            padding: 6rem 0;
+            color: white;
+        }
+
+        .cta-final h2 {
+            color: white;
+        }
+
+        .cta-final .cta-button {
+            background: white;
+            color: var(--color-primario);
+            margin-top: 2rem;
+        }
+
+        .cta-final .cta-button:hover {
+            background: var(--color-fondo);
+            color: white;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            background: var(--color-fondo-sec);
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primario);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .director-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .lightbox-nav button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+
+            .lightbox-prev {
+                left: 10px;
+            }
+
+            .lightbox-next {
+                right: 10px;
+            }
+
+            .lightbox-close {
+                top: 20px;
+                right: 20px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-bar">
+        <a href="/" class="logo">
+            <div class="logo-icon">FOTS</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+        <a href="https://wa.me/56948713122?text=Hola ,%20quiero%20iniciar%20mi%20proyecto%20de%20blackwork" target="_blank" rel="noopener noreferrer" class="header-cta">Iniciar proyecto</a>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <h1>Franco Orrego | Tatuaje de Autor</h1>
+            <p class="hero-subtitle">Blackwork a Gran Escala. Proyectos para coleccionistas serios. Diseños exclusivos que cuentan tu historia con la máxima precisión técnica.</p>
+            
+            <div class="hero-philosophy">
+                <p>Estudio Privado en Santiago de Chile. Somos la mejor opción Precio / Calidad.</p>
+            </div>
+            
+            <div class="cta-group" style="margin-top: 2rem;">
+                <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/></svg>
+                    Cotizar al DM
+                </a>
+                <a href="#gallery" class="cta-button cta-secondary">Algunos proyectos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESO -->
+    <main>
+        <section id="process">
+            <div class="container">
+                <h2 class="animate-in">Cómo funciona</h2>
+                <p style="text-align: center; color: var(--color-texto-sec); max-width: 600px; margin: 0 auto 3rem;">Desde tu primera idea hasta la pieza finalizada, un proceso claro y profesional.</p>
+                
+                <div class="process-steps animate-in">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Contacto</h3>
+                        <p>Envía tu idea por DM de insta e indícanos tamaño aproximado y zona del cuerpo.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Reserva</h3>
+                        <p>Abono de reserva para formalizar tu proyecto, fijar las condiciones y bloquear tu fecha. </p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Diseño</h3>
+                        <p>Creamos tu diseño personalizado. Revisión y ajustes hasta tu total conformidad.</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Sesión</h3>
+                        <p>Día del tatuaje. Ambiente 100% profesional, estéril y enfocado en el arte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERÍA DE IMÁGENES PNG CON LIGHTBOX -->
+        <section id="gallery">
+            <div class="container">
+                <h2 class="animate-in">Proyectos recientes</h2>
+                <p style="text-align: center; color: var(--color-texto-sec); max-width: 600px; margin: 0 auto 3rem;">Haz clic para ver en tamaño completo. <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" style="color: var(--color-primario);">Visita nuestro Instagram</a> para ver más.</p>
+                
+                <div class="gallery-grid animate-in">
+                    <div class="gallery-item" data-caption="Ornamental | Espalda">
+                        <img src="assets/IMG_2064.png" alt="Ornamental Espalda" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Ornamental</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Heterogéneo | Manga completa">
+                        <img src="assets/IMG_2176.png" alt="Heterogéneo Manga" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Heterogéneo</h4>
+                            <p>Manga completa</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Cobertura | Espalda">
+                        <img src="assets/IMG_3282.png" alt="Cobertura Espalda" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Cobertura</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Felino | Espalda alta">
+                        <img src="assets/IMG_3626.png" alt="Felino Espalda" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Felino</h4>
+                            <p>Espalda alta</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dragones | Espalda">
+                        <img src="assets/IMG_1511.png" alt="Dragones Espalda" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Dragones</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dragón | Pecho y brazo">
+                        <img src="assets/IMG_3104.png" alt="Dragón Pecho" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Dragón</h4>
+                            <p>Pecho y brazo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Heterogéneo | Manga cara externa">
+                        <img src="assets/IMG_3951.png" alt="Heterogéneo Manga" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Heterogéneo</h4>
+                            <p>Manga cara externa</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dioses griegos | Espalda en proceso">
+                        <img src="assets/IMG_3402.png" alt="Dioses griegos Espalda" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Dioses griegos</h4>
+                            <p>Espalda en proceso</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Ave y flores | Muslo cadera">
+                        <img src="assets/IMG_1716.png" alt="Ave y flores Muslo" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <h4>Ave y flores</h4>
+                            <p>Muslo cadera</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIGHTBOX -->
+        <div id="lightbox" class="lightbox">
+            <div class="lightbox-content">
+                <span class="lightbox-close">&times;</span>
+                <img class="lightbox-image" src="" alt="">
+                <div class="lightbox-caption"></div>
+                <div class="lightbox-nav">
+                    <button class="lightbox-prev">&lsaquo;</button>
+                    <button class="lightbox-next">&rsaquo;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIRECTORIA -->
+        <section id="director" class="director-section">
+            <div class="container">
+                <div class="director-container animate-in">
+                    <div>
+                        <img src="assets/4fotofranco.png" alt="Franco, tatuador del estudio" class="director-photo" loading="lazy">
+                    </div>
+                    <div>
+                        <h2>Artista del Tatuaje</h2>
+                        <h3>Franco</h3>
+                        <p>Arquitecto y Tatuador Profesional, especializado en blackwork y proyectos de gran escala. Más de 5 años creando piezas únicas para coleccionistas que entienden el valor del arte en la piel.</p>
+                        
+                        <div class="cert-badge">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Certificado en Asepsia y Antisepsia
+                        </div>
+                        <div class="cert-badge">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Especializado en Blackwork a Gran Escala
+                        </div>
+                        <p style="margin-top: 1.5rem;">Cada proyecto es un compromiso de excelencia técnica y artística. No improvisamos. Diseñamos, planificamos y ejecutamos con precisión quirúrgica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="cta-final">
+            <div class="container">
+                <h2 class="animate-in">¿Listo para tu próximo tatuaje?</h2>
+                <p class="animate-in">Envíanos tu idea. Respondemos en menos de 24 horas.</p>
+                
+                <div class="cta-group animate-in">
+                    <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/></svg>
+                        Enviar DM por Instagram
+                    </a>
+                </div>
+                
+                <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">Respuesta en menos de 24 horas · Lunes a sábado</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+            <a href="/borrado">Borrado Láser</a>
+            <a href="/sistema-3k">Sistema 3K Pro</a>
+        </div>
+        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // LIGHTBOX FUNCTIONALITY
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.querySelector('.lightbox-image');
+            const lightboxCaption = document.querySelector('.lightbox-caption');
+            const lightboxClose = document.querySelector('.lightbox-close');
+            const lightboxPrev = document.querySelector('.lightbox-prev');
+            const lightboxNext = document.querySelector('.lightbox-next');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            let currentIndex = 0;
+
+            // Abrir lightbox
+            galleryItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateLightbox();
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            // Cerrar lightbox
+            const closeLightbox = () => {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            // Navegación
+            const showPrev = () => {
+                currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+                updateLightbox();
+            };
+
+            const showNext = () => {
+                currentIndex = (currentIndex + 1) % galleryItems.length;
+                updateLightbox();
+            };
+
+            lightboxPrev.addEventListener('click', showPrev);
+            lightboxNext.addEventListener('click', showNext);
+
+            // Teclado
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') showPrev();
+                if (e.key === 'ArrowRight') showNext();
+            });
+
+            // Touch/swipe para móvil
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            lightbox.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            lightbox.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            const handleSwipe = () => {
+                if (touchEndX < touchStartX - 50) showNext();
+                if (touchEndX > touchStartX + 50) showPrev();
+            };
+
+            // Actualizar contenido del lightbox
+            function updateLightbox() {
+                const item = galleryItems[currentIndex];
+                const img = item.querySelector('.gallery-image');
+                const caption = item.dataset.caption;
+                
+                lightboxImage.src = img.src;
+                lightboxImage.alt = img.alt;
+                lightboxCaption.textContent = caption;
+            }
+
+            // Intersection Observer para animaciones
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1)';
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
