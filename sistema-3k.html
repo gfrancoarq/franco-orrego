@@ -354,6 +354,38 @@
                 padding: 60px 0;
             }
         }
+                /* --- FOOTER --- */
+        footer {
+            background: var(--color-fondo-sec);
+            text-align: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--color-borde);
+            color: var(--color-texto-sec);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primario);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            margin: 0.25rem 0;
+        }
     </style>
 </head>
 <body>
@@ -478,11 +510,16 @@
     </section>
 
     <!-- FOOTER -->
-    <footer style="background: var(--color-fondo-sec);">
-        <div style="padding: 2rem 0; text-align: center; color: var(--color-texto-sec);">
-            <p>© 2025 Franco Orrego Tattoo Studio</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Av. Portugal 1322, Santiago de Chile</p>
+    <footer>
+        <div class="footer-links">
+            <a href="/tyc.html">Términos y Condiciones</a>
+            <a href="/politica-privacidad.html" class="active">Política de Privacidad</a>
+            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/sistema-3k.html">Sistema 3K</a>
         </div>
+        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
+        <p>Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
     </footer>
 
     <script>
