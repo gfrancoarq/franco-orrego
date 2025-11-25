@@ -455,6 +455,13 @@
             }
         }
     </style>
+        <script type="module">
+    // Importamos la librería directamente desde la nube
+    import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
+    
+    // Iniciamos el rastreo
+    inject();
+    </script>
 </head>
 <body>
 
