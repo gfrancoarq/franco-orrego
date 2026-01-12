@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Franco Orrego Tattoo Studio - Arte, borrado láser y formación de tatuadores profesionales en Santiago.">
+    <meta name="description" content="Franco Orrego Tattoo Studio - Arte en la piel y tecnología de borrado láser en Santiago.">
     
-    <title>Franco Orrego | Tattoo Studio & Business System</title>
+    <title>Franco Orrego | Tattoo Studio</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- SISTEMA DE DISEÑO HOME --- */
+        /* --- SISTEMA DE DISEÑO --- */
         :root {
+            /* Paleta ajustada para más contraste y seriedad */
             --color-primario: #00D4FF;
-            --color-primario-oscuro: #00A8CC;
-            --color-secundario: #6366F1; /* Índigo para el sistema de negocios */
-            --color-exito: #06D6A0;
-            --color-alerta: #FF6B6B;
+            --color-primario-oscuro: #008CB3;
+            --color-acento: #FFFFFF;
             
-            --color-fondo: #0A0A0B;
-            --color-fondo-sec: #121214;
-            --color-borde: #252529;
+            --color-fondo: #050506; /* Más oscuro para vibe Rock/Night */
+            --color-fondo-sec: #0F0F11;
+            --color-borde: #2A2A30;
             
             --color-titulo: #FFFFFF;
-            --color-texto: #E5E5E7;
-            --color-texto-sec: #A0A0A3;
+            --color-texto: #C0C0C4;
+            --color-texto-sec: #8A8A8E;
             
-            --sombra-lg: 0 20px 25px -5px rgba(0, 212, 255, 0.1);
-            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0099FF 100%);
-            --gradiente-secundario: linear-gradient(135deg, var(--color-secundario) 0%, #8B5CF6 100%);
+            --sombra-lg: 0 25px 50px -12px rgba(0, 212, 255, 0.15);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0077FF 100%);
+            /* Gradiente sutil para fondos */
+            --gradiente-oscuro: radial-gradient(circle at center, rgba(30,30,35,1) 0%, rgba(5,5,6,1) 100%);
         }
 
         * {
@@ -47,31 +47,26 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--color-fondo);
             color: var(--color-texto);
-            line-height: 1.8;
+            line-height: 1.7;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
-            width: 92%;
-            max-width: 1200px;
+            width: 90%;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 100px 0;
+            padding: 80px 0;
         }
 
         /* --- ANIMACIONES --- */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         .animate-in {
-            animation: fadeIn 0.8s ease forwards;
+            animation: fadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0; /* Inicio invisible para JS */
         }
 
         /* --- HEADER --- */
@@ -81,32 +76,30 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(5, 5, 6, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             transition: all 0.3s ease;
         }
 
-        .header-bar.scrolled {
-            background: rgba(10, 10, 11, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--color-borde);
-        }
-
-        /* Navegación agregada */
         .nav-menu {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             align-items: center;
         }
 
         .nav-menu a {
-            color: var(--color-texto-sec);
+            color: var(--color-texto);
             text-decoration: none;
             font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             transition: color 0.3s ease;
-            font-size: 0.9rem;
         }
 
         .nav-menu a:hover {
@@ -116,93 +109,109 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             text-decoration: none;
             color: white;
         }
 
         .logo-icon {
-            width: 70px;
-            height: 50px;
-            background: var(--gradiente);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--color-primario);
+            letter-spacing: -1px;
         }
 
         .logo-text {
             font-weight: 700;
-            font-size: 0.95rem;
-            line-height: 1.2;
+            font-size: 1rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .logo-text span {
             display: block;
             color: var(--color-texto-sec);
             font-weight: 400;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
         }
 
-        .header-cta {
-            padding: 10px 20px;
-            background: var(--gradiente);
-            border-radius: 50px;
-            text-decoration: none;
-            color: white;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
-        }
-
-        .header-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
-        }
-
-        /* --- TIPOGRAFÍA --- */
+        /* --- TIPOGRAFÍA ESTILO ROCK/POSTER --- */
         h1, h2, h3 {
-            font-weight: 700;
             color: var(--color-titulo);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
+            line-height: 1.1;
+            text-transform: uppercase; /* Clave para el estilo Rock */
         }
 
         h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.8rem, 7vw, 5rem);
             margin-bottom: 1.5rem;
-            background: var(--gradiente);
+            font-weight: 900;
+            letter-spacing: -2px;
+        }
+
+        /* Efecto de texto con imagen o gradiente */
+        .gradient-text {
+            background: linear-gradient(to right, #fff, #999);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-weight: 800;
+        }
+        
+        .highlight {
+            color: var(--color-primario);
         }
 
         h2 {
             font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
-        .highlight {
-            color: var(--color-primario);
-            font-weight: 600;
+        /* --- HERO --- */
+        .hero {
+            min-height: 90vh; /* Un poco menos alto para pantallas de laptop */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: var(--color-fondo);
+            /* Fondo sutil tipo "spotlight" */
+            background-image: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-texto-sec);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
         }
 
         /* --- BOTONES --- */
         .cta-group {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -210,194 +219,178 @@
         .cta-button {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 18px 36px;
-            border-radius: 50px;
+            justify-content: center;
+            padding: 16px 32px;
+            border-radius: 4px; /* Bordes más cuadrados para estilo más rudo */
             font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
+            transition: all 0.3s ease;
             cursor: pointer;
+            min-width: 200px;
         }
 
         .cta-primary {
-            background: var(--gradiente);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            background: var(--color-titulo);
+            color: black;
+            border: 1px solid white;
         }
 
         .cta-primary:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
-        }
-
-        .cta-secundario {
-            background: var(--gradiente-secundario);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .cta-secundario:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            color: black;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
         }
 
         .cta-secondary {
             background: transparent;
-            color: var(--color-primario);
-            border: 2px solid var(--color-primario);
+            color: white;
+            border: 1px solid var(--color-borde);
         }
 
         .cta-secondary:hover {
-            background: var(--color-primario);
-            color: white;
-            transform: translateY(-3px) scale(1.02);
+            border-color: white;
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
         }
 
-        /* --- HERO --- */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-                        linear-gradient(rgba(10, 10, 11, 0.95), rgba(10, 10, 11, 0.98));
-            position: relative;
-            padding-top: 80px;
-        }
-
-        .hero-content {
-            max-width: 900px;
-            padding: 0 2rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--color-texto-sec);
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- SERVICIOS GRID --- */
+        /* --- SERVICIOS GRID (AHORA 2 COLUMNAS) --- */
         .services-hub {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
+            /* Máximo 450px para que se vean robustas */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 450px)); 
+            justify-content: center;
+            gap: 2rem;
             margin-top: 4rem;
         }
 
         .service-card {
             background: var(--color-fondo-sec);
-            border-radius: 24px;
-            padding: 3rem 2rem;
             border: 1px solid var(--color-borde);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 3.5rem 2.5rem;
             text-decoration: none;
             color: inherit;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alineación izquierda para estilo editorial */
+            transition: all 0.4s ease;
             position: relative;
-            overflow: hidden;
+        }
+
+        /* Borde superior de acento */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-primario), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .service-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--color-primario);
-            box-shadow: var(--sombra-lg);
+            transform: translateY(-5px);
+            background: #161618;
+            border-color: #333;
         }
 
-        .service-card:nth-child(2):hover {
-            border-color: var(--color-secundario);
+        .service-card:hover::before {
+            opacity: 1;
         }
 
         .service-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--gradiente);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 2.5rem;
             margin-bottom: 1.5rem;
-            font-size: 2rem;
-        }
-
-        .service-card:nth-child(2) .service-icon {
-            background: var(--gradiente-secundario);
-        }
-
-        .service-card:nth-child(3) .service-icon {
-            background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
-        }
-
-        .service-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
+            color: var(--color-primario);
         }
 
         .service-card p {
             color: var(--color-texto-sec);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1rem;
         }
 
-        .service-tags {
+        .service-link {
+            margin-top: auto;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             display: flex;
+            align-items: center;
             gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
+        }
+        
+        .service-link::after {
+            content: '→';
+            transition: transform 0.3s ease;
         }
 
-        .tag {
-            padding: 0.4rem 0.8rem;
-            background: var(--color-fondo);
-            border-radius: 20px;
-            font-size: 0.75rem;
+        .service-card:hover .service-link::after {
+            transform: translateX(5px);
+        }
+
+        /* Tags visuales */
+        .tag-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .mini-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--color-texto-sec);
             border: 1px solid var(--color-borde);
+            padding: 4px 8px;
+            border-radius: 2px;
         }
 
         /* --- STATS --- */
         .stats-section {
-            background: var(--color-fondo-sec);
             border-top: 1px solid var(--color-borde);
             border-bottom: 1px solid var(--color-borde);
+            background: #080809;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr); /* Forzar 3 columnas */
             gap: 2rem;
             text-align: center;
         }
 
-        .stat-item {
-            padding: 2rem;
-        }
-
         .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--color-primario);
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white; /* Blanco puro para más impacto */
             display: block;
             line-height: 1;
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            color: var(--color-texto-sec);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: block;
+            color: var(--color-primario);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
         }
 
         /* --- FOOTER --- */
         footer {
             text-align: center;
-            padding: 3rem 0;
-            background: var(--color-fondo-sec);
+            padding: 4rem 0;
+            background: var(--color-fondo);
             color: var(--color-texto-sec);
             font-size: 0.9rem;
             border-top: 1px solid var(--color-borde);
@@ -406,60 +399,64 @@
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .social-links a {
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--color-fondo);
-            border-radius: 50%;
-            border: 1px solid var(--color-borde);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: scale(1.1);
         }
 
-        .social-links a svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--color-texto-sec);
+        .social-links svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--color-texto);
             transition: fill 0.3s ease;
         }
 
-        .social-links a:hover {
-            background: var(--color-primario);
-            border-color: var(--color-primario);
-            transform: translateY(-3px);
-        }
-
         .social-links a:hover svg {
-            fill: white;
+            fill: var(--color-primario);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
         }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
+            .nav-menu { display: none; }
             
-            .services-hub {
+            h1 { font-size: 2.5rem; }
+            
+            .stats-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
+                gap: 3rem;
             }
             
-            .service-card {
-                padding: 2rem 1.5rem;
-            }
+            .cta-button { width: 100%; }
         }
     </style>
         <script type="module">
-    // Importamos la librería directamente desde la nube
     import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
-    
-    // Iniciamos el rastreo
     inject();
     </script>
 </head>
@@ -468,7 +465,7 @@
     <!-- HEADER -->
     <header class="header-bar">
         <a href="#" class="logo">
-            <div class="logo-icon">FOTS</div>
+            <div class="logo-icon">FO</div>
             <div class="logo-text">
                 Franco Orrego
                 <span>Tattoo Studio</span>
@@ -476,23 +473,21 @@
         </a>
         
         <nav class="nav-menu">
-            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/tattoo.html">Estudio</a>
             <a href="/borrado.html">Borrado Láser</a>
-            <a href="/sistema-3k.html">Sistema 3K</a>
+            <!-- Sistema 3K eliminado temporalmente -->
         </nav>
-        
-
     </header>
 
     <!-- HERO -->
     <section class="hero">
         <div class="hero-content animate-in">
-            <h1>Donde el arte encuentra su forma</h1>
-            <p class="hero-subtitle">Estudio de tatuajes profesional en Santiago. Creamos, transformamos y capacitamos. Tu piel, tu estilo.</p>
+            <h1><span class="gradient-text">Identidad</span> Que Perdura</h1>
+            <p class="hero-subtitle">Estudio privado en Santiago. Especialistas en proyectos de gran formato para quienes viven bajo sus propias reglas.</p>
             
             <div class="cta-group">
-                <a href="/tattoo.html" class="cta-button cta-primary">Cotizar un tatuaje</a>
-                <a href="/borrado.html" class="cta-button cta-secondary">Cotizar borrado láser</a>
+                <a href="/tattoo.html" class="cta-button cta-primary">Cotizar Proyecto</a>
+                <a href="/borrado.html" class="cta-button cta-secondary">Borrar Tatuaje</a>
             </div>
         </div>
     </section>
@@ -501,65 +496,49 @@
     <main>
         <section id="services-hub">
             <div class="container">
-                <h2 class="animate-in">Elige tu camino</h2>
-                <p style="text-align: center; color: var(--color-texto-sec); max-width: 600px; margin: 0 auto 3rem;">Tres servicios, una misma pasión por el arte en la piel. Descubre lo que necesitas.</p>
-                
                 <div class="services-hub animate-in">
+                    <!-- Tarjeta Tatuajes Mejorada -->
                     <a href="/tattoo.html" class="service-card">
-                        <div class="service-icon">🎨</div>
+                        <div class="tag-container">
+                            <span class="mini-tag">Arte</span>
+                            <span class="mini-tag">Personalizado</span>
+                        </div>
+                        <div class="service-icon">⚡</div> <!-- Icono Rayo para vibe rock -->
                         <h3>Tatuajes</h3>
-                        <p>Arte profesional en tu piel. Estilo único, técnica impecable y diseños personalizados que cuentan tu historia.</p>
-                        <div class="service-tags">
-                            <span class="tag">Blackwork</span>
-                            <span class="tag">Realismo</span>
-                            <span class="tag">Diseño exclusivo</span>
-                        </div>
+                        <p>Diseño exclusivo y técnica profesional. Creamos piezas sólidas que envejecen contigo. Especialidad en Blackwork y Realismo.</p>
+                        <span class="service-link">Ver Galería</span>
                     </a>
                     
+                    <!-- Tarjeta Borrado -->
                     <a href="/borrado.html" class="service-card">
-                        <div class="service-icon">✨</div>
+                         <div class="tag-container">
+                            <span class="mini-tag">Tecnología</span>
+                            <span class="mini-tag">Láser</span>
+                        </div>
+                        <div class="service-icon">↺</div>
                         <h3>Borrado Láser</h3>
-                        <p>Borra tu pasado. Renace sin límites. Tecnología de punta para eliminar tatuajes sin cicatrices, con resultados desde la primera sesión.</p>
-                        <div class="service-tags">
-                            <span class="tag">ADSS Laser</span>
-                            <span class="tag">Resultados garantizados</span>
-                            <span class="tag">Financiación</span>
-                        </div>
-                    </a>
-                    
-                    <a href="/sistema-3k.html" class="service-card">
-                        <div class="service-icon">🚀</div>
-                        <h3>Sistema 3K Pro</h3>
-                        <p>De aprendiz a profesional 6 figuras. Programa completo para tatuadores que quieren especializarse, crear su marca y facturar +$3K mensual.</p>
-                        <div class="service-tags">
-                            <span class="tag">Mentoría</span>
-                            <span class="tag">Negocios</span>
-                            <span class="tag">Marca personal</span>
-                        </div>
+                        <p>¿Cambio de planes? Tecnología avanzada para eliminar o aclarar tatuajes antiguos sin dejar cicatrices. Recupera tu piel.</p>
+                        <span class="service-link">Más Información</span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- STATS -->
+        <!-- STATS (Ajustado a 3 columnas) -->
         <section class="stats-section">
             <div class="container" style="padding: 60px 0;">
                 <div class="stats-grid animate-in">
                     <div class="stat-item">
-                        <span class="stat-number">1000+</span>
-                        <span class="stat-label">Tatuajes realizados</span>
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Años de Experiencia</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">200+</span>
-                        <span class="stat-label">Clientes de borrado</span>
+                        <span class="stat-number">1k+</span>
+                        <span class="stat-label">Proyectos Realizados</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">4.9</span>
-                        <span class="stat-label">Valoración promedio</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">+$3K</span>
-                        <span class="stat-label">Ingresos estudiantes</span>
+                        <span class="stat-label">Satisfacción Clientes</span>
                     </div>
                 </div>
             </div>
@@ -568,7 +547,6 @@
 
     <!-- FOOTER -->
     <footer>
-        
         <div class="social-links">
             <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24">
@@ -581,34 +559,36 @@
                 </svg>
             </a>
         </div>
+        
         <div class="footer-links">
-            <a href="/tyc.html">Términos y Condiciones</a>
-            <a href="/politica-privacidad.html" class="active">Política de Privacidad</a>
-            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/tattoo.html">Estudio</a>
             <a href="/borrado.html">Borrado Láser</a>
-            <a href="/sistema-3k.html">Sistema 3K</a>
+            <a href="/tyc.html">Términos</a>
+            <a href="/politica-privacidad.html">Privacidad</a>
         </div>
-        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
-        <p>Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
+        
+        <p style="opacity: 0.5; font-size: 0.8rem;">© 2025 Franco Orrego Tattoo Studio</p>
+        <p style="margin-top: 5px; color: white;">Av. Portugal 1322, Santiago</p>
     </footer>
 
     <script>
-        // Animaciones y scroll
         document.addEventListener('DOMContentLoaded', () => {
-            // Header scroll effect
+            // Efecto Header al hacer scroll
             window.addEventListener('scroll', () => {
                 const header = document.querySelector('.header-bar');
-                if (window.scrollY > 100) {
-                    header.classList.add('scrolled');
+                if (window.scrollY > 50) {
+                    header.style.background = 'rgba(5, 5, 6, 0.95)';
+                    header.style.padding = '0.8rem 2rem';
                 } else {
-                    header.classList.remove('scrolled');
+                    header.style.background = 'rgba(5, 5, 6, 0.8)';
+                    header.style.padding = '1.2rem 2rem';
                 }
             });
 
-            // Intersection Observer para animaciones
+            // Animaciones de entrada
             const observerOptions = {
-                threshold: 0.2,
-                rootMargin: '0px 0px -100px 0px'
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -616,14 +596,12 @@
                     if (entry.isIntersecting) {
                         entry.target.style.opacity = '1';
                         entry.target.style.transform = 'translateY(0)';
+                        entry.target.style.animationName = 'fadeIn';
                     }
                 });
             }, observerOptions);
 
             document.querySelectorAll('.animate-in').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1)';
                 observer.observe(el);
             });
         });
