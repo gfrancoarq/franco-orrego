@@ -160,9 +160,12 @@ Tienes acceso a una herramienta para ver la disponibilidad real (check_availabil
 
 // ... (Línea 160: termina el prompt ALICIA_PROMPT) ...
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+import Groq from "groq-sdk";
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
+// 1. VERIFICACIÓN DEL WEBHOOK (Sin cambios)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get('hub.mode');
@@ -175,6 +178,7 @@ export async function GET(req: Request) {
   return new NextResponse('Forbidden', { status: 403 });
 }
 
+// 2. RECIBIR MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
   const entry = body.entry?.[0]?.changes?.[0]?.value;
@@ -185,55 +189,24 @@ export async function POST(req: Request) {
   const messageId = message.id; 
   const from = message.from;
   let text = message.text?.body || "";
-  let mediaId = null;
 
-  if (message.type === 'image') {
-    mediaId = message.image.id;
-    text = "[EL CLIENTE ENVIÓ UNA IMAGEN]";
-  }
-
-  // A. GUARDAR MENSAJE Y EVITAR SPAM
+  // A. ANTI-SPAM
   const { error: insertError } = await supabase
     .from('messages')
-    .insert({ 
-        phone_number: from, 
-        role: 'user', 
-        content: text,
-        message_id: messageId,
-        media_url: mediaId 
-    });
+    .insert({ phone_number: from, role: 'user', content: text, message_id: messageId });
 
   if (insertError && insertError.code === '23505') return new NextResponse('Duplicate', { status: 200 });
 
-  // B. ASEGURAR Y ACTUALIZAR EL CHAT (Upsert)
-  // Primero obtenemos los datos actuales si existen
+  // B. GESTIÓN DE LEAD Y TEMPERATURA
   const { data: chatData } = await supabase
     .from('chats')
-    .select('*')
-    .eq('phone_number', from)
-    .maybeSingle();
+    .upsert({ phone_number: from }, { onConflict: 'phone_number' })
+    .select().single();
 
-  let currentTemp = chatData?.lead_temperature || 'frio';
   let msgCount = (chatData?.total_messages || 0) + 1;
+  await supabase.from('chats').update({ total_messages: msgCount }).eq('phone_number', from);
 
-  if (msgCount > 5 || text.toLowerCase().includes('precio')) currentTemp = 'tibio';
-  if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
-
-  // Guardamos los cambios en la tabla chats
-  await supabase.from('chats').upsert({ 
-      phone_number: from,
-      total_messages: msgCount, 
-      lead_temperature: currentTemp 
-  }, { onConflict: 'phone_number' });
-
-  // C. OBTENER DATOS DEL CLIENTE
-  const { data: customerData } = await supabase
-    .from('customers')
-    .select('full_name')
-    .eq('phone_number', from)
-    .maybeSingle();
-
-  // D. HISTORIAL DE CONVERSACIÓN
+  // C. HISTORIAL PARA GROQ
   const { data: history } = await supabase
     .from('messages')
     .select('role, content')
@@ -241,40 +214,37 @@ export async function POST(req: Request) {
     .order('created_at', { ascending: true })
     .limit(10);
 
-  const chatHistory = history?.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-  })) || [];
+  const messagesForGroq = [
+    { role: "system", content: ALICIA_PROMPT + `\n(Info: Lead ${chatData?.lead_temperature || 'frio'})` },
+    ...history.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'assistant',
+      content: msg.content
+    })),
+    { role: "user", content: text }
+  ];
 
-  const contextoLead = `\n(Lead: ${currentTemp}. Nombre: ${customerData?.full_name || 'Desconocido'})`;
-
-  // E. INVOCAR ALICIA (gemini-3-flash-preview)
-  const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest", 
-      systemInstruction: ALICIA_PROMPT + contextoLead
+  // D. INVOCAR A GROQ (Ultra rápido)
+  const completion = await groq.chat.completions.create({
+    messages: messagesForGroq,
+    model: "llama-3.3-70b-versatile",
   });
 
-  const chat = model.startChat({ history: chatHistory });
-  const result = await chat.sendMessage(text);
-  const responseText = result.response.text();
+  const responseText = completion.choices[0]?.message?.content || "";
 
-  // F. RESPUESTA POR WHATSAPP (Fraccionada)
+  // E. ENVÍO FRACCIONADO
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
-    await new Promise(resolve => setTimeout(resolve, 4000)); 
+    await new Promise(resolve => setTimeout(resolve, 3000)); 
   }
 
-  // G. GUARDAR RESPUESTA DE ALICIA
-  await supabase.from('messages').insert({ 
-      phone_number: from, 
-      role: 'assistant', 
-      content: responseText 
-  });
+  // F. GUARDAR RESPUESTA
+  await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
 
   return new NextResponse('OK', { status: 200 });
 }
 
+// Función auxiliar (v22.0)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
