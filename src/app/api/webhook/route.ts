@@ -1,4 +1,4 @@
-// 1. IMPORTS
+// 1. IMPORTS (Asegúrate de que estén al principio)
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Groq from "groq-sdk";
@@ -9,7 +9,7 @@ import { ALICIA_PROMPT } from './prompt';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// CORRECCIÓN: Estructura correcta para JWT de Google
+// CORRECCIÓN: Nueva estructura para evitar el error "but got 4"
 const auth = new google.auth.JWT({
   email: process.env.GOOGLE_CALENDAR_EMAIL,
   key: process.env.GOOGLE_CALENDAR_KEY?.replace(/\\n/g, '\n'),
@@ -33,30 +33,18 @@ async function getAvailableSlots() {
       maxResults: 50
     });
 
-    // Filtro de privacidad para no enviar datos sensibles a la IA
+    // Filtramos solo para enviar a la IA los bloques ocupados
     return response.data.items?.map((e: any) => ({
       inicio: e.start.dateTime || e.start.date,
       fin: e.end.dateTime || e.end.date
     })) || [];
   } catch (e) { 
-    console.error("Error Calendario:", e);
+    console.error("Error en Calendar:", e);
     return []; 
   }
 }
 
-// 3. WEBHOOK GET
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const mode = searchParams.get('hub.mode');
-  const token = searchParams.get('hub.verify_token');
-  const challenge = searchParams.get('hub.challenge');
-  if (mode === 'subscribe' && token === process.env.WEBHOOK_VERIFY_TOKEN) {
-    return new NextResponse(challenge, { status: 200 });
-  }
-  return new NextResponse('Forbidden', { status: 403 });
-}
-
-// 4. WEBHOOK POST
+// 4. WEBHOOK POST (Lógica de respuesta)
 export async function POST(req: Request) {
   const body = await req.json();
   const entry = body.entry?.[0]?.changes?.[0]?.value;
@@ -79,34 +67,28 @@ export async function POST(req: Request) {
   const { data: customerData } = await supabase.from('customers').select('full_name').eq('phone_number', from).maybeSingle();
   const nombreReal = customerData?.full_name || "Gustavo";
 
-  // C. CALENDARIO REAL
+  // C. CONSULTA DE CALENDARIO (Solo si es necesario)
   let infoCalendario = "";
   if (text.toLowerCase().match(/fecha|disponible|cuándo|dia|día|si|mándame|mandame/)) {
     const eventos = await getAvailableSlots();
-    // Enviamos esto para que Alicia no invente y vea los huecos reales
-    infoCalendario = `\n(IMPORTANTE: Hoy es ${new Date().toLocaleDateString()}. Estos son los eventos OCUPADOS: ${JSON.stringify(eventos.slice(0,10))}. Sugiere 7 fechas LIBRES reales respetando los bloques de Franco.)`;
+    // Le decimos a la IA qué fecha es hoy para que no se pierda en el tiempo
+    infoCalendario = `\n(HOY ES: ${new Date().toLocaleDateString('es-CL')}. Bloques OCUPADOS: ${JSON.stringify(eventos.slice(0,15))}. Sugiere 7 fechas LIBRES según tus bloques de trabajo.)`;
   }
 
-  // D. CONSULTA DE HISTORIAL
-  const { data: history } = await supabase.from('messages').select('role, content').eq('phone_number', from).order('created_at', { ascending: true }).limit(4);
-
-  // E. RESPUESTA CON GROQ
-  const contextoLead = `\n(Cliente: ${nombreReal}. No lo llames Juan. No repitas precios. ${infoCalendario})`;
-  
+  // D. RESPUESTA CON GROQ
   const completion = await groq.chat.completions.create({
     messages: [
-      { role: "system", content: ALICIA_PROMPT + contextoLead },
-      ...(history || []).map((msg: any) => ({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content })),
+      { role: "system", content: ALICIA_PROMPT + `\n(Cliente: ${nombreReal}. ${infoCalendario})` },
       { role: "user", content: text }
-    ] as any,
+    ],
     model: "llama-3.3-70b-versatile",
-    temperature: 0.2, 
+    temperature: 0.1, // Bajamos la temperatura al mínimo para evitar invenciones
     max_tokens: 400
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
 
-  // F. ENVÍO FRACCIONADO
+  // E. ENVÍO FRACCIONADO
   const paragraphs = responseText.split(/\n\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
@@ -117,7 +99,7 @@ export async function POST(req: Request) {
   return new NextResponse('OK', { status: 200 });
 }
 
-// G. FUNCIÓN AUXILIAR (Faltaba en tu archivo)
+// 5. FUNCIÓN AUXILIAR (Asegúrate de pegarla al final)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
