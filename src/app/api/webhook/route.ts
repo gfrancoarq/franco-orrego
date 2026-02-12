@@ -165,7 +165,6 @@ import Groq from "groq-sdk";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// 1. VERIFICACIÓN DEL WEBHOOK (Sin cambios)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get('hub.mode');
@@ -178,7 +177,6 @@ export async function GET(req: Request) {
   return new NextResponse('Forbidden', { status: 403 });
 }
 
-// 2. RECIBIR MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
   const entry = body.entry?.[0]?.changes?.[0]?.value;
@@ -190,23 +188,43 @@ export async function POST(req: Request) {
   const from = message.from;
   let text = message.text?.body || "";
 
-  // A. ANTI-SPAM
+  // A. ANTI-SPAM Y REGISTRO DE MENSAJE
   const { error: insertError } = await supabase
     .from('messages')
-    .insert({ phone_number: from, role: 'user', content: text, message_id: messageId });
+    .insert({ 
+        phone_number: from, 
+        role: 'user', 
+        content: text,
+        message_id: messageId 
+    });
 
-  if (insertError && insertError.code === '23505') return new NextResponse('Duplicate', { status: 200 });
+  if (insertError && insertError.code === '23505') return new NextResponse('Duplicate handled', { status: 200 });
 
-  // B. GESTIÓN DE LEAD Y TEMPERATURA
+  // B. GESTIÓN DE CHAT Y TEMPERATURA
   const { data: chatData } = await supabase
     .from('chats')
     .upsert({ phone_number: from }, { onConflict: 'phone_number' })
     .select().single();
 
   let msgCount = (chatData?.total_messages || 0) + 1;
-  await supabase.from('chats').update({ total_messages: msgCount }).eq('phone_number', from);
+  let currentTemp = chatData?.lead_temperature || 'frio';
 
-  // C. HISTORIAL PARA GROQ
+  if (msgCount > 5 || text.toLowerCase().includes('precio')) currentTemp = 'tibio';
+  if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
+
+  await supabase.from('chats').update({ 
+      total_messages: msgCount, 
+      lead_temperature: currentTemp 
+  }).eq('phone_number', from);
+
+  // C. OBTENER DATOS DEL CLIENTE
+  const { data: customerData } = await supabase
+    .from('customers')
+    .select('full_name')
+    .eq('phone_number', from)
+    .maybeSingle();
+
+  // D. CONSULTAR HISTORIAL PARA GROQ
   const { data: history } = await supabase
     .from('messages')
     .select('role, content')
@@ -215,36 +233,39 @@ export async function POST(req: Request) {
     .limit(10);
 
   const messagesForGroq = [
-    { role: "system", content: ALICIA_PROMPT + `\n(Info: Lead ${chatData?.lead_temperature || 'frio'})` },
-    ...history.map(msg => ({
+    { role: "system", content: ALICIA_PROMPT + `\n(Info interna: Cliente ${customerData?.full_name || 'Desconocido'}. Lead ${currentTemp})` },
+    ...history.map((msg: any) => ({
       role: msg.role === 'user' ? 'user' : 'assistant',
       content: msg.content
     })),
     { role: "user", content: text }
   ];
 
-  // D. INVOCAR A GROQ (Ultra rápido)
+  // E. INVOCAR A GROQ (Ultra rápido)
   const completion = await groq.chat.completions.create({
-    messages: messagesForGroq,
+    messages: messagesForGroq as any,
     model: "llama-3.3-70b-versatile",
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
 
-  // E. ENVÍO FRACCIONADO
+  // F. RESPUESTA FRACCIONADA Y NATURAL
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
-    await new Promise(resolve => setTimeout(resolve, 3000)); 
+    await new Promise(resolve => setTimeout(resolve, 3500)); 
   }
 
-  // F. GUARDAR RESPUESTA
-  await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
+  // G. GUARDAR RESPUESTA DE ALICIA
+  await supabase.from('messages').insert({ 
+      phone_number: from, 
+      role: 'assistant', 
+      content: responseText 
+  });
 
   return new NextResponse('OK', { status: 200 });
 }
 
-// Función auxiliar (v22.0)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
