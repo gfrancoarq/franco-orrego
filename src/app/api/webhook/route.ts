@@ -164,8 +164,24 @@ Tienes acceso a una herramienta para ver la disponibilidad real (check_availabil
 - Usa frases como: "¿Te mando las fechas y los datos para reservar?" o "¿Quieres asegurar tu cupo de una vez?".
 - PROHIBIDO: Ofrecer "simplificar el diseño" a menos que el cliente diga explícitamente que no tiene el dinero.
 `;
+// ... (Línea 160: termina el prompt ALICIA_PROMPT) ...
 
-// ... (Línea 160 en adelante)
+import Groq from "groq-sdk";
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const mode = searchParams.get('hub.mode');
+  const token = searchParams.get('hub.verify_token');
+  const challenge = searchParams.get('hub.challenge');
+
+  if (mode === 'subscribe' && token === process.env.WEBHOOK_VERIFY_TOKEN) {
+    return new NextResponse(challenge, { status: 200 });
+  }
+  return new NextResponse('Forbidden', { status: 403 });
+}
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -176,17 +192,17 @@ export async function POST(req: Request) {
 
   const from = message.from;
   const text = message.text?.body || "";
+  const messageId = message.id;
 
-  // A. GUARDAR MENSAJE (Anti-Spam incluido)
+  // A. GUARDAR MENSAJE DEL USUARIO (Con protección Anti-Spam)
   const { error: insertError } = await supabase
     .from('messages')
-    .insert({ phone_number: from, role: 'user', content: text, message_id: message.id });
+    .insert({ phone_number: from, role: 'user', content: text, message_id: messageId });
 
-  if (insertError && insertError.code === '23505') return new NextResponse('OK', { status: 200 });
+  if (insertError && insertError.code === '23505') return new NextResponse('Duplicate', { status: 200 });
 
-  // B. EXTRACCIÓN DE NOMBRE (Lógica mejorada)
-  // Si el cliente dice "Soy X" o "Me llamo X", lo guardamos de una.
-  const nameMatch = text.match(/(?:soy|llam[oa]|nombre es)\s+([A-Z][a-z]+)/i);
+  // B. EXTRACCIÓN DE NOMBRE (Lógica de código inmediata)
+  const nameMatch = text.match(/(?:soy|llam[oa]|nombre es)\s+([A-ZÁÉÍÓÚ][a-zñáéíóú]+)/i);
   if (nameMatch && nameMatch[1]) {
     await supabase.from('customers').upsert({ 
       phone_number: from, 
@@ -195,7 +211,11 @@ export async function POST(req: Request) {
   }
 
   // C. GESTIÓN DE CHAT Y TEMPERATURA
-  const { data: chatData } = await supabase.from('chats').upsert({ phone_number: from }, { onConflict: 'phone_number' }).select().single();
+  const { data: chatData } = await supabase
+    .from('chats')
+    .upsert({ phone_number: from }, { onConflict: 'phone_number' })
+    .select().single();
+
   let msgCount = (chatData?.total_messages || 0) + 1;
   let currentTemp = chatData?.lead_temperature || 'frio';
 
@@ -208,28 +228,53 @@ export async function POST(req: Request) {
   const { data: customer } = await supabase.from('customers').select('full_name').eq('phone_number', from).maybeSingle();
   const { data: history } = await supabase.from('messages').select('role, content').eq('phone_number', from).order('created_at', { ascending: true }).limit(8);
 
-  // E. RESPUESTA CON GROQ (LLAMA 3.3)
-  const promptFinal = ALICIA_PROMPT + `\n(Cliente: ${customer?.full_name || 'Desconocido'}. Lead: ${currentTemp})`;
+  // E. RESPUESTA CON GROQ (Formateo Estricto)
+  const promptFinal = ALICIA_PROMPT + `\n(Info Contexto: Cliente ${customer?.full_name || 'Desconocido'}. Lead ${currentTemp}. Sé breve y proactiva al cierre.)`;
   
+  // Mapeo manual del historial para asegurar compatibilidad con Groq
+  const messagesForGroq = [
+    { role: "system", content: promptFinal },
+    ...(history || []).map((msg: any) => ({
+      role: msg.role === 'user' ? 'user' : 'assistant',
+      content: msg.content
+    })),
+    { role: "user", content: text }
+  ];
+
   const completion = await groq.chat.completions.create({
-    messages: [
-      { role: "system", content: promptFinal },
-      ...history.map((msg: any) => ({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content })),
-      { role: "user", content: text }
-    ],
+    messages: messagesForGroq as any,
     model: "llama-3.3-70b-versatile",
-    max_tokens: 150 // Limitamos los tokens para que no escriba testamentos
+    max_tokens: 180, // Limita testamentos
+    temperature: 0.7
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
 
-  // F. ENVÍO FRACCIONADO
+  // F. ENVÍO FRACCIONADO (Ritmo humano)
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
-    await new Promise(resolve => setTimeout(resolve, 3000)); 
+    await new Promise(resolve => setTimeout(resolve, 3500)); 
   }
 
+  // G. GUARDAR RESPUESTA DE ALICIA
   await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
+
   return new NextResponse('OK', { status: 200 });
+}
+
+// Función auxiliar (v22.0)
+async function sendToWhatsApp(to: string, text: string) {
+  await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.META_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      messaging_product: 'whatsapp',
+      to: to,
+      text: { body: text },
+    }),
+  });
 }
