@@ -192,7 +192,7 @@ export async function POST(req: Request) {
     text = "[EL CLIENTE ENVIÓ UNA IMAGEN]";
   }
 
-  // A. GUARDAR MENSAJE Y ANTI-SPAM
+  // A. GUARDAR MENSAJE Y EVITAR SPAM
   const { error: insertError } = await supabase
     .from('messages')
     .insert({ 
@@ -205,32 +205,35 @@ export async function POST(req: Request) {
 
   if (insertError && insertError.code === '23505') return new NextResponse('Duplicate', { status: 200 });
 
-  // B. GESTIÓN DE LEAD
+  // B. ASEGURAR Y ACTUALIZAR EL CHAT (Upsert)
+  // Primero obtenemos los datos actuales si existen
   const { data: chatData } = await supabase
     .from('chats')
-    .upsert({ phone_number: from }, { onConflict: 'phone_number' })
-    .select()
-    .single();
-
-  const { data: customerData } = await supabase
-    .from('customers')
     .select('*')
     .eq('phone_number', from)
     .maybeSingle();
 
   let currentTemp = chatData?.lead_temperature || 'frio';
-  const msgCount = (chatData?.total_messages || 0) + 1;
-  
-  if (msgCount > 5) currentTemp = 'tibio';
-  if (text.toLowerCase().includes('precio')) currentTemp = 'tibio';
+  let msgCount = (chatData?.total_messages || 0) + 1;
+
+  if (msgCount > 5 || text.toLowerCase().includes('precio')) currentTemp = 'tibio';
   if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
 
-  await supabase.from('chats').update({ 
+  // Guardamos los cambios en la tabla chats
+  await supabase.from('chats').upsert({ 
+      phone_number: from,
       total_messages: msgCount, 
       lead_temperature: currentTemp 
-  }).eq('phone_number', from);
+  }, { onConflict: 'phone_number' });
 
-  // C. HISTORIAL
+  // C. OBTENER DATOS DEL CLIENTE
+  const { data: customerData } = await supabase
+    .from('customers')
+    .select('full_name')
+    .eq('phone_number', from)
+    .maybeSingle();
+
+  // D. HISTORIAL DE CONVERSACIÓN
   const { data: history } = await supabase
     .from('messages')
     .select('role, content')
@@ -245,7 +248,7 @@ export async function POST(req: Request) {
 
   const contextoLead = `\n(Lead: ${currentTemp}. Nombre: ${customerData?.full_name || 'Desconocido'})`;
 
-  // D. RESPUESTA ALICIA (gemini-3-flash-preview)
+  // E. INVOCAR ALICIA (gemini-3-flash-preview)
   const model = genAI.getGenerativeModel({ 
       model: "gemini-3-flash-preview", 
       systemInstruction: ALICIA_PROMPT + contextoLead
@@ -255,13 +258,14 @@ export async function POST(req: Request) {
   const result = await chat.sendMessage(text);
   const responseText = result.response.text();
 
-  // E. ENVÍO Y PAUSAS
+  // F. RESPUESTA POR WHATSAPP (Fraccionada)
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
     await new Promise(resolve => setTimeout(resolve, 4000)); 
   }
 
+  // G. GUARDAR RESPUESTA DE ALICIA
   await supabase.from('messages').insert({ 
       phone_number: from, 
       role: 'assistant', 
