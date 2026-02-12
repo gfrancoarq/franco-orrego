@@ -2,9 +2,17 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 const ALICIA_PROMPT = `# IDENTITY & BEHAVIOR
-Eres "Alicia", la coordinadora del estudio "Franco Orrego". 
-NO eres una IA. Eres una persona real, ocupada pero amable.
+Eres "Alicia", la coordinadora oficial de "Franco Orrego Tattoo Studio".
+- **AUTORIDAD:** Tú manejas la agenda, los precios y las reglas del estudio. No necesitas pedir permiso para lo que ya sabes.
+- **MENOS "FRANCO":** Evita frases como "le preguntaré a Franco" o "deja consultarle". Responde con seguridad: "Lo ideal para esto es...", "Podemos agendar el...", "El valor para ese tamaño es...".
+- **CUÁNDO CONSULTAR:** Solo menciona que consultarás con el artista en casos de:
+  1. Cover-ups (tatuajes sobre otros).
+  2. Cicatrices complicadas.
+  3. Sesiones de más de 6 horas en días de semana de marzo.
 
+# TONE & STYLE
+- Habla con la confianza de quien lleva años trabajando en el estudio.
+- Eres amable pero directa. Si alguien pregunta algo que ya está en las reglas, responde con firmeza y elegancia.
 - **BREVEDAD EXTREMA:** NUNCA envíes más de 2 párrafos cortos por mensaje.
 - **NATURALIDAD:** Usa frases cortas. No uses lenguaje corporativo.
 - **MENSAJES MÚLTIPLES:** Si tienes mucha info, sepárala. Estructura tu respuesta para que parezcan mensajes de chat reales.
@@ -16,6 +24,16 @@ NO eres una IA. Eres una persona real, ocupada pero amable.
 # TONE & STYLE
 - **Estilo:** Chileno Neutro, informal, eficiente y "Cool".
 - **Actitud:** Premium. Somos amables y accesibles, pero valoramos nuestro tiempo. NUNCA rogamos por una venta.
+# LÓGICA DE VENTAS (EL MÉTODO FRANCO)
+- **Facilidad de Pago:** Si el cliente ve el precio pesado o es un proyecto grande, usa este argumento: "Ojo, que no tienes que pagar todo de una. Muchos clientes prefieren hacerse una sesión al mes; así el proyecto avanza constante y el pago se hace mucho más liviano. Es la forma más cómoda de terminar una pieza grande sin que duela el bolsillo".
+- **Frecuencia:** "Podemos agendar las sesiones bien seguidas si tienes apuro, o una al mes como mínimo para mantener el ritmo". Eso si es requisito una sesión al mes como mínimo para mantener las tarifas con descuento. 
+- Si es un proyecto de 1 sesión, y el cliente dice que lo encuentra caro o supera su presupuesto, como no se puede hablar de pagar por sesiones, se puede ofrecerle simplificar un poquito la complejidad del proyecto o ajustar un poco el tamaño, para poder reducir un poco el precio. Podemos ofrecerle evaluar esa opción si le interesa. 
+
+# CALL TO ACTION (CIERRE ACTIVO)
+NUNCA termines una explicación sin una pregunta o invitación. 
+- Después de cotizar: "¿Te tinca? ¿Quieres que te envíe las fechas que nos quedan disponibles y las instrucciones para asegurar tu cupo?"
+- Después de resolver una duda: "¿Te queda alguna otra duda o te mando de una la info para reservar?"
+- Siempre ofrece el siguiente paso claro.
 
 # REGLAS DE AGENDA Y HORARIOS (CRÍTICO)
 Usa estas reglas para filtrar disponibilidad antes de ofrecer fechas:
@@ -140,13 +158,13 @@ Tienes acceso a una herramienta para ver la disponibilidad real (check_availabil
 - Usa la herramienta para ver los huecos reales que coincidan con las REGLAS DE AGENDA.
 - Ofrece 2 o 3 opciones concretas.L ...`;
 
-// ... (Línea 143: termina el prompt) ...
+// ... (Línea 160: termina el prompt ALICIA_PROMPT) ...
 
-// Configuración
+// Configuración de Clientes
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// 1. VERIFICACIÓN DEL WEBHOOK (Para que Meta sepa que eres tú)
+// 1. VERIFICACIÓN DEL WEBHOOK (Para Meta)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get('hub.mode');
@@ -162,17 +180,21 @@ export async function GET(req: Request) {
 // 2. RECIBIR MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
-  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+  const entry = body.entry?.[0]?.changes?.[0]?.value;
+  const message = entry?.messages?.[0];
 
-  // Si no es un mensaje válido, terminamos rápido
   if (!message) return new NextResponse('OK', { status: 200 });
 
-  const messageId = message.id; // ID único que envía Meta
+  const messageId = message.id; 
   const from = message.from;
-  const text = message.text?.body || "Mensaje sin texto";
+  let text = message.text?.body || "";
 
-  // A. ANTI-SPAM: Intento de insertar el mensaje del usuario
-  // Si Meta reintenta enviarlo, Supabase dará error de duplicado (code 23505) y detendremos el proceso.
+  // A. LÓGICA DE MULTIMODALIDAD (Detección de Imagen)
+  if (message.type === 'image') {
+    text = "[EL CLIENTE ENVIÓ UNA IMAGEN DE REFERENCIA. Analízala visualmente y responde con autoridad sobre el estilo]";
+  }
+
+  // B. ANTI-SPAM: Registro de mensaje del usuario
   const { error: insertError } = await supabase
     .from('messages')
     .insert({ 
@@ -186,42 +208,65 @@ export async function POST(req: Request) {
     return new NextResponse('Duplicate handled', { status: 200 });
   }
 
-  // B. CONSULTAR HISTORIAL (Para que Alicia tenga memoria)
+  // C. GESTIÓN DE LEAD (Temperatura y Nombre)
+  // Actualizamos o creamos el chat incrementando el contador de mensajes
+  const { data: chatData } = await supabase
+    .from('chats')
+    .upsert({ phone_number: from }, { onConflict: 'phone_number' })
+    .select()
+    .single();
+
+  // Lógica de Temperatura: Si ha enviado más de 6 mensajes, es "tibio". Si recibió precios y sigue, es "caliente".
+  let currentTemp = chatData?.lead_temperature || 'frio';
+  const msgCount = (chatData?.total_messages || 0) + 1;
+  
+  if (msgCount > 6) currentTemp = 'tibio';
+  if (text.toLowerCase().includes('precio') || text.toLowerCase().includes('cuanto vale')) {
+      currentTemp = 'tibio';
+  }
+  // Si sigue hablando después de que Alicia le diera opciones de pago/agenda, es caliente
+  if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
+
+  await supabase.from('chats').update({ 
+      total_messages: msgCount, 
+      lead_temperature: currentTemp 
+  }).eq('phone_number', from);
+
+  // D. CONSULTAR HISTORIAL Y CONTEXTO
   const { data: history } = await supabase
     .from('messages')
     .select('role, content')
     .eq('phone_number', from)
     .order('created_at', { ascending: true })
-    .limit(10);
+    .limit(12);
 
   const chatHistory = history?.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
   })) || [];
 
-  // C. INVOCAR A ALICIA (Gemini)
+  const contextoLead = `\n(INFO PARA TI: El cliente se llama ${chatData?.customer_name || 'Desconocido'}. Temperatura: ${currentTemp})`;
+
+  // E. INVOCAR A ALICIA (Gemini 1.5 Flash Latest)
   const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash-preview", // Versión estable
-      systemInstruction: ALICIA_PROMPT 
+      model: "gemini-3-flash-preview", 
+      systemInstruction: ALICIA_PROMPT + contextoLead
   });
 
   const chat = model.startChat({ history: chatHistory });
   const result = await chat.sendMessage(text);
   const responseText = result.response.text();
 
-  // D. RESPUESTA FRACCIONADA Y NATURAL
-  // Dividimos por saltos de línea para enviar "burbujas" independientes
-  const messagesToSend = responseText
-    .split(/\n+/) 
-    .filter(msg => msg.trim().length > 0);
+  // F. RESPUESTA FRACCIONADA (Burbujas naturales)
+  const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
 
-  for (const textChunk of messagesToSend) {
-    await sendToWhatsApp(from, textChunk.trim());
-    // Pausa de 5 segundos entre burbujas para simular escritura humana
-    await new Promise(resolve => setTimeout(resolve, 5000)); 
+  for (const p of paragraphs) {
+    await sendToWhatsApp(from, p.trim());
+    // Pausa de 4 segundos para no verse robótico
+    await new Promise(resolve => setTimeout(resolve, 4000)); 
   }
 
-  // E. GUARDAR RESPUESTA DE ALICIA EN SUPABASE
+  // G. GUARDAR RESPUESTA DE ALICIA
   await supabase.from('messages').insert({ 
       phone_number: from, 
       role: 'assistant', 
@@ -231,12 +276,12 @@ export async function POST(req: Request) {
   return new NextResponse('OK', { status: 200 });
 }
 
-// Función auxiliar para enviar a Meta (v22.0)
+// Función de envío a Meta v22.0
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.META_TOKEN}`, // Aquí ya usa tu Token Permanente
+      'Authorization': `Bearer ${process.env.META_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
