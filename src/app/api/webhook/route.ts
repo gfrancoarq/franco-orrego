@@ -198,8 +198,19 @@ export async function POST(req: Request) {
     const result = await chat.sendMessage(text);
     const responseText = result.response.text();
 
-    // D. Responder vía WhatsApp API
-    await sendToWhatsApp(from, responseText);
+
+  // ... después de generar responseText con Gemini ...
+
+// Dividimos el texto por puntos apartes o saltos de línea
+const messagesToSend = responseText
+  .split(/\n|\. /) 
+  .filter(msg => msg.trim().length > 0);
+
+for (const textChunk of messagesToSend) {
+  await sendToWhatsApp(from, textChunk.trim());
+  // Simulamos que Alicia está escribiendo el siguiente mensaje
+  await new Promise(resolve => setTimeout(resolve, 2000)); 
+}
 
     // E. Guardar respuesta (CORREGIDO: phone_number)
     await supabase.from('messages').insert({ 
