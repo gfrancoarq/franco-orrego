@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Elimina tatuajes en Santiago con láser de última generación. Resultados visibles desde la 1ª sesión. Financiación Mercado Pago. ¡Cotiza gratis!">
+    
+    <title>Borrado de Tatuajes Láser | Resultados Garantizados | Franco Orrego</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SISTEMA DE DISEÑO FINAL --- */
+        :root {
+            /* Color profesional para láser médico-estético: Azul tecnológico */
+            --color-primario: #00D4FF; /* Cian brillante, más tecnológico que verde */
+            --color-primario-oscuro: #00A8CC;
+            --color-exito: #06D6A0;
+            --color-alerta: #FF6B6B;
+            
+            --color-fondo: #0A0A0B;
+            --color-fondo-sec: #121214;
+            --color-borde: #252529;
+            
+            --color-titulo: #FFFFFF;
+            --color-texto: #E5E5E7;
+            --color-texto-sec: #A0A0A3;
+            
+            --sombra-lg: 0 20px 25px -5px rgba(0, 212, 255, 0.1);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0099FF 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 0;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        /* --- HEADER CON LOGO AJUSTADO --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .header-bar.scrolled {
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 70px; /* MÁS GRANDE */
+            height: 50px; /* MÁS GRANDE */
+            background: var(--gradiente);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem; /* AJUSTADO */
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 0.95rem; /* MÁS GRANDE */
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .header-cta {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-cta:hover {
+            background: var(--color-primario);
+            transform: translateY(-2px);
+        }
+
+        /* --- TIPOGRAFÍA --- */
+        h1, h2, h3 {
+            font-weight: 700;
+            color: var(--color-titulo);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            background: var(--gradiente);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .highlight {
+            color: var(--color-primario);
+            font-weight: 600;
+        }
+
+        /* --- BOTONES --- */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-primary {
+            background: var(--gradiente);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .cta-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .cta-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--color-primario);
+            border: 2px solid var(--color-primario);
+        }
+
+        .cta-secondary:hover {
+            background: var(--color-primario);
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        /* --- BADGE --- */
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge-success {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--color-primario);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        /* --- TIMER DE OFERTA --- */
+        .launch-offer {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(6, 214, 160, 0.1) 100%);
+            border: 2px solid var(--color-primario);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem auto;
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .launch-offer:before {
+            content: "🚀";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 4rem;
+            opacity: 0.1;
+        }
+
+        .launch-offer h3 {
+            color: var(--color-primario);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .countdown-item {
+            text-align: center;
+            background: var(--color-fondo);
+            padding: 1.5rem;
+            border-radius: 12px;
+            min-width: 80px;
+            border: 1px solid var(--color-borde);
+        }
+
+        .countdown-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-primario);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            color: var(--color-texto-sec);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        linear-gradient(rgba(10, 10, 11, 0.85), rgba(10, 10, 11, 0.95)),
+                        url('assets/tattoo-removal-arms.jpg') center/cover;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-texto-sec);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-texto-sec);
+        }
+
+        /* --- SERVICIOS --- */
+        #services {
+            background: linear-gradient(to bottom, var(--color-fondo), var(--color-fondo-sec) 100px);
+        }
+
+        .service-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .service-text > p:first-child {
+            margin-bottom: 2rem;
+        }
+
+        .service-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--color-borde);
+            box-shadow: var(--sombra-lg);
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .service-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .service-specialties {
+            margin-top: 3rem;
+            background: var(--color-fondo-sec);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--color-borde);
+        }
+
+        .service-specialties h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .service-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .service-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-borde);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .service-list li:last-child {
+            border-bottom: none;
+        }
+
+        .service-list li:before {
+            content: "✓";
+            color: var(--color-primario);
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .warning-box {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid var(--color-alerta);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- PRECIOS --- */
+        .pricing-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            color: var(--color-texto-sec);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .price-pack {
+            background: var(--color-fondo-sec);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--color-borde);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-pack:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--sombra-lg);
+            border-color: var(--color-primario);
+        }
+
+        .price-pack.featured {
+            border: 2px solid var(--color-primario);
+            background: linear-gradient(180deg, var(--color-fondo-sec) 0%, rgba(0, 212, 255, 0.05) 100%);
+        }
+
+        .price-pack.featured:before {
+            content: "MÁS POPULAR";
+            position: absolute;
+            top: 20px;
+            right: -40px;
+            background: var(--gradiente);
+            color: white;
+            padding: 5px 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .price-pack h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .size {
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .price-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-titulo);
+            margin: 1rem 0;
+        }
+
+        .price-value span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-texto-sec);
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .price-options-list {
+            margin: 2rem 0;
+        }
+
+        .price-option {
+            background: var(--color-fondo);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+        }
+
+        .price-option:hover {
+            border-color: var(--color-primario);
+            transform: translateX(5px);
+        }
+
+        .price-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .price-option-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .price-option-text strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--color-titulo);
+            margin-bottom: 0.25rem;
+        }
+
+        .saving-highlight {
+            color: var(--color-exito);
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: rgba(6, 214, 160, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 0.25rem;
+        }
+
+        /* --- GALERÍA --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: var(--color-fondo-sec);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: var(--sombra-lg);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(10, 10, 11, 0.9));
+            padding: 2rem 1.5rem 1.5rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        /* --- PROCESO --- */
+        .process-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2.5rem;
+            background: var(--color-fondo-sec);
+            border-radius: 20px;
+            border: 1px solid var(--color-borde);
+            transition: all 0.4s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primario);
+        }
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background: var(--gradiente);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+
+        /* --- SOBRE NOSOTROS --- */
+        #about {
+            background: var(--color-fondo-sec);
+        }
+
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        .profile-card {
+            background: var(--color-fondo);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--color-borde);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            border: 4px solid var(--color-primario);
+            box-shadow: var(--sombra-lg);
+        }
+
+        .cert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            margin: 1rem 0;
+            font-weight: 600;
+            color: var(--color-primario);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-primario);
+            display: block;
+        }
+
+        /* --- FAQ --- */
+        .faq-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: var(--color-texto-sec);
+            padding: 1rem 0 2rem 0; /* PADDING ADECUADO */
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        details {
+            background: var(--color-fondo-sec);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+        }
+
+        details:hover {
+            border-color: var(--color-primario);
+        }
+
+        summary {
+            padding: 1.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--color-titulo);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary::after {
+            content: "+";
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--color-primario);
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-content {
+            padding: 0 1.75rem 1.75rem;
+            color: var(--color-texto-sec);
+            border-top: 1px solid var(--color-borde);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        /* --- UBICACIÓN --- */
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .map-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 450px;
+            border: 1px solid var(--color-borde);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            filter: grayscale(50%);
+            border: 0;
+        }
+
+        .info-card {
+            background: var(--color-fondo-sec);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--color-borde);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* --- CTA FINAL --- */
+        .cta-final {
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.15) 0%, transparent 70%),
+                        var(--color-fondo);
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .urgency-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin: 2rem auto;
+            max-width: 500px;
+            font-weight: 600;
+            color: var(--color-alerta);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            background: var(--color-fondo-sec);
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-fondo);
+            border-radius: 50%;
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--color-texto-sec);
+            transition: fill 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            transform: translateY(-3px);
+        }
+
+        .social-links a:hover svg {
+            fill: white;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (min-width: 768px) {
+            .service-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .process-timeline {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .location-grid {
+                grid-template-columns: 2fr 1fr;
+                gap: 3rem;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr 2fr;
+                text-align: left;
+            }
+
+            .profile-card {
+                margin: 0;
+            }
+        }
+
+        /* --- BOTÓN WHATSAPP FIJO --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background: #128C7E;
+        }
+
+        .whatsapp-float svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .whatsapp-float svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .countdown {
+                gap: 1rem;
+            }
+
+            .countdown-item {
+                min-width: 60px;
+                padding: 1rem;
+            }
+
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+<!-- Facebook Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '1643881586593034'); fbq('track', 'PageView');</script><noscript> <img height="1" width="1" src="https://www.facebook.com/tr?id=1643881586593034&ev=PageView&noscript=1"/></noscript><!-- End Facebook Pixel Code -->
+</head>
+<body>
+
+    <!-- HEADER CON LOGO AJUSTADO -->
+    <header class="header-bar">
+        <a href="/index.html" class="logo">
+            <div class="logo-icon">FOTS</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+        <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" target="_blank" rel="noopener noreferrer" class="header-cta">Cotizar ahora</a>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <div class="badge badge-success">✓ Resultados visibles desde la 1ª sesión</div>
+            <h1>Borra tu pasado. <br>Renace sin límites.</h1>
+            <p class="hero-subtitle">Láser de última generación en Santiago. Sin evaluaciones, sin excusas. Solo resultados reales para personas que quieren cambiar su historia.</p>
+            
+            <div class="cta-group">
+                <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Cotizar ahora (30 seg)
+                </a>
+                <a href="#pricing" class="cta-button cta-secondary">🥳 Ver Packs en OFERTA</a>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span><strong>200+</strong> clientes satisfechos</span>
+                </div>
+                <div class="trust-badge">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1l3 5h5l-4 4 1 6-5-3-5 3 1-6-4-4h5z"/></svg>
+                    <span>4.9/5 valoraciones</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMER DE OFERTA DE LANZAMIENTO -->
+    <section class="container" style="padding-top: 0; padding-bottom: 0;">
+        <div class="launch-offer animate-in">
+            <h3>🚀 Ofertas BLACK WEEK</h3>
+            <p>Aprovecha nuestro increible servicio de borrado de tatuajes con descuentos exclusivos por pocos días. Atrévete con la mejor tecnología láser de Santiago.</p>
+            <p style="margin-top: 1rem;"><strong>Estos precios subirán un 30% en diciembre 2025.</strong></p>
+            
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">15</span>
+                    <span class="countdown-label">Días</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">08</span>
+                    <span class="countdown-label">Horas</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">42</span>
+                    <span class="countdown-label">Min</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">18</span>
+                    <span class="countdown-label">Seg</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.9rem; color: var(--color-texto-sec); margin-top: 1.5rem;">
+                Aprovecha ahora. Al comprar tu pack hoy, <strong>congelas estos precios</strong> para todas las sesiones que necesites.
+            </p>
+        </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <main>
+        <section id="services">
+            <div class="container">
+                <h2 class="animate-in">Tecnología que transforma tu piel</h2>
+                
+                <div class="service-container animate-in">
+                    <div class="service-text">
+                        <p>El <strong>ADSS Laser System</strong> utiliza pulsos de luz ultracortos que actúan como miles de micro-explosiones, fragmentando la tinta en partículas microscópicas que tu cuerpo elimina de forma <span class="highlight">100% natural</span>.</p>
+                        
+                        <p>La diferencia: actúa selectivamente sobre el pigmento, respetando tu piel sana. <span class="highlight">Resultados visibles desde la primera sesión</span>, sin cicatrices, sin riesgos.</p>
+
+                        <div class="service-specialties">
+                            <h3>Especialistas en lo que importa</h3>
+                            <ul class="service-list">
+                                <li><strong>Tatuajes negros:</strong> Nuestra máxima especialidad. Eliminación completa o atenuación profunda.</li>
+                                <li><strong>Microblading & cejas:</strong> Borrado preciso de cejas tatuadas o microblading fallido.</li>
+                                <li><strong>Manchas solares & de nacimiento:</strong> Tratamiento estético avanzado.</li>
+                                <li><strong>Rejuvenecimiento facial:</strong> Pregunta por protocolos personalizados.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="service-image">
+                        <img src="assets/laser-erasing-tattoo.jpg" alt="Máquina láser profesional eliminando tatuaje en estudio de Santiago" loading="lazy">
+                    </div>
+                </div>
+                
+                <div class="warning-box animate-in">
+                    <strong>⚠️ Importante:</strong> No trabajamos con tatuajes a color. Nuestro equipo está calibrado para <strong>máxima efectividad en pigmentos oscuros</strong>. Esto nos permite ofrecerte los mejores resultados del mercado.
+                </div>
+            </div>
+        </section>
+
+        <!-- PRECIOS -->
+        <section id="pricing">
+            <div class="container">
+                <h2 class="animate-in">Inversión en tu nueva piel</h2>
+                <p class="pricing-intro animate-in">Paga solo por lo que necesitas. Llevate entre <strong class="highlight"> 1 a 3 sesiones gratis</strong> con nuestros packs. Tenemos opción de débito y crédito.</p>
+
+                <div class="pricing-grid animate-in">
+                    <div class="price-pack">
+                        <h3>Tatuaje Pequeño</h3>
+                        <span class="size">Hasta 5 cm</span>
+                        <div class="price-value">$30.000<span>por sesión</span></div>
+                        
+                        <div class="price-options-list">
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 3 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $30.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-e692aaa5-f1c2-4ac9-a971-8c975a33501c" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $60.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 5 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $60.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-1b5f9763-669c-493b-935a-6adc726c4297" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $90.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 8 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $90.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-35909c39-57dd-4ac7-a609-5bf39021e0f2" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $150.000</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-pack featured">
+                        <h3>Tatuaje Mediano</h3>
+                        <span class="size">Hasta 10 cm</span>
+                        <div class="price-value">$60.000<span>por sesión</span></div>
+                        
+                        <div class="price-options-list">
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 3 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $60.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-6e915a42-aa03-43dc-8236-805bb8c0226e" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $120.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 5 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $120.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-5ffd30d4-eca8-43ac-b6b3-a520be0c1871" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $180.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 8 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $180.000</span>
+                                    </div>
+                                    <a href="https://mpago.la/22C6aok" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $300.000</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-pack">
+                        <h3>Tatuaje Grande</h3>
+                        <span class="size">Hasta 20 cm</span>
+                        <div class="price-value">$100.000<span>por sesión</span></div>
+                        
+                        <div class="price-options-list">
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 3 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $100.000</span>
+                                    </div>
+                                    <a href="https://biolibre.cl/borradotatuajesfost/630023306-de4b83cb-eac8-420c-a36c-fa6b73d7cc26" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $200.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 5 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $200.000</span>
+                                    </div>
+                                    <a href="https://mpago.la/2d8iuQN" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $300.000</a>
+                                </div>
+                            </div>
+                            <div class="price-option">
+                                <div class="price-option-content">
+                                    <div class="price-option-text">
+                                        <strong>Pack 8 sesiones</strong>
+                                        <span class="saving-highlight">Ahorra $300.000</span>
+                                    </div>
+                                    <a href="https://mpago.la/2j5RRuc" class="cta-button cta-primary" style="padding: 12px 24px; font-size: 0.9rem;">Comprar $500.000</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-in" style="margin-top: 3rem;">
+                    <div class="price-option" style="max-width: 600px; margin: 0 auto;">
+                        <div class="price-option-content">
+                            <div class="price-option-text">
+                                <strong>Anestesia tópica opcional</strong>
+                                <span>Sesión cómoda sin dolor</span>
+                            </div>
+                            <span style="font-weight: 800; color: var(--color-titulo);">$20.000</span>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--color-texto-sec);">Un tubo puede durar varias sesiones según el tamaño del tatuaje.</p>
+                </div>
+
+                <div class="animate-in" style="margin-top: 3rem; text-align: center;">
+                    <h3 style="margin-bottom: 1rem;">¿Tu tatuaje es más grande de 20 cm?</h3>
+                    <p style="max-width: 600px; margin: 0 auto 1.5rem; color: var(--color-texto-sec);">Mangas, tatuajes de espalda o piezas XL requieren cotización personalizada.</p>
+                    <a href="https://wa.me/56948713122?text=Hola,%20tengo%20un%20tatuaje%20grande%20y%20quiero%20cotización" target="_blank" rel="noopener noreferrer" class="cta-button cta-whatsapp">Cotizar pieza XL</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERÍA -->
+        <section id="gallery">
+            <div class="container">
+                <h2 class="animate-in">Transformaciones reales</h2>
+                <p class="section-intro animate-in">Cada foto es un cliente que decidió cambiar su historia. Progresos de 3 a 8 sesiones.</p>
+                
+                <div class="gallery-grid animate-in">
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-1.jpg" alt="Borrado de tatuaje de mariposa en hombro después de 3 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Mariposa · Hombro</h4>
+                            <p>3 sesiones · Eliminación 85%</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-2.jpg" alt="Borrado de tatuaje de letras en muñeca después de 6 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Letras · Muñeca</h4>
+                            <p>6 sesiones · Eliminación 95%</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-3.jpg" alt="Borrado de tatuaje de alas en cuello después de 5 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Alas · Cuello</h4>
+                            <p>5 sesiones · Eliminación 90%</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-4.jpg" alt="Borrado de tatuaje de pulpo en brazo después de 6 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Pulpo · Brazo</h4>
+                            <p>6 sesiones · Eliminación 80%</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-5.jpg" alt="Borrado de tatuaje de letras en mano después de 4 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Letras · Mano</h4>
+                            <p>4 sesiones · Eliminación 70%</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/tattoo-removal-6.jpg" alt="Borrado de tatuaje de luna y estrellas en hombro después de 5 sesiones" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Luna · Hombro</h4>
+                            <p>5 sesiones · Eliminación 92%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCESO -->
+        <section id="process">
+            <div class="container">
+                <h2 class="animate-in">Tu camino en 3 pasos</h2>
+                
+                <div class="process-timeline animate-in">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Cotiza al instante</h3>
+                        <p>Envía foto por WhatsApp. Te damos precio y agenda en minutos. <strong>Sin evaluaciones presenciales.</strong></p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Sesión rápida</h3>
+                        <p>30 min y listo. Si nos compraste anestesia, confirma y llega 30 min antes para aplicarla cómodamente.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Descansa 30 días</h3>
+                        <p>Tu cuerpo elimina la tinta. Agenda fácilmente vía WhatsApp. <strong>Ves resultados cada mes.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOBRE NOSOTROS -->
+        <section id="about">
+            <div class="container">
+                <div class="about-container">
+                    <div class="profile-card animate-in">
+                        <img src="assets/mari-orrego-profile.jpg" alt="Mari Orrego, Directora Técnica Certificada en borrado láser" class="profile-pic" loading="lazy">
+                        <h3>Mari Orrego</h3>
+                        <p style="color: var(--color-primario); font-weight: 600; margin-bottom: 1rem;">Directora del Estudio</p>
+                        
+                        <div class="cert-badge">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Certificada en Asepsia y Antisepsia
+                        </div>
+                        
+                        <p style="font-size: 0.95rem; color: var(--color-texto-sec);">+5 años experiencia en procedimientos estéticos. Cada sesión es protocolizada para tu máxima seguridad.</p>
+                    </div>
+                    
+                    <div class="animate-in" style="text-align: left;">
+                        <h2>¿Por qué elegirnos?</h2>
+                        <p>Somos un estudio de tatuajes que entiende el arte en tu piel. Sabemos lo que significa un tatuaje mal hecho o una etapa terminada.</p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number">200+</span>
+                                <span class="stat-label">Clientes</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">4.9</span>
+                                <span class="stat-label">Valoración</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">30 días</span>
+                                <span class="stat-label">Entre sesiones</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-bottom: 2rem;">Este servicio es parte de <strong>Franco Orrego Tattoo Studio</strong>, donde el arte y la técnica se unen.</p>
+                        
+                        <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" class="cta-button cta-secondary">@francoorrego.tattoo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <div class="container">
+                <h2 class="animate-in">Preguntas frecuentes</h2>
+                <div class="faq-intro animate-in">
+                    Respuestas para que tomes la mejor decisión.
+                </div>
+                
+                <div class="faq-list animate-in">
+                    <details>
+                        <summary>¿Cuántas sesiones necesito?</summary>
+                        <div class="faq-content">
+                            <p><strong>Entre 5 y 15 sesiones</strong> para eliminación completa. Depende de:</p>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>Antigüedad del tatuaje (más viejo = más fácil)</li>
+                                <li>Profundidad de la tinta</li>
+                                <li>Tu tipo de piel y metabolismo</li>
+                            </ul>
+                            <p style="margin-top: 1rem;">Al cotizarlo te damos una estimación bastante realista.</p>
+                        </div>
+                    </details>
+                    
+                    <details>
+                        <summary>¿Duele mucho?</summary>
+                        <div class="faq-content">
+                            <p>Se siente como un <strong>"golpe con un elástico"</strong>. Dolor 6/10, pero dura segundos por área.</p>
+                            <p style="margin-top: 0.5rem;">💡 <strong>Con anestesia tópica ($20.000)</strong> el dolor baja a 3/10. Muchos de nuestros clientes la usan y valoran la comodidad. Al comprar tu pack puedes agregar la anestesia.</p>
+                        </div>
+                    </details>
+                    
+                    <details>
+                        <summary>¿Qué pasa si solo quiero atenuar el tatuaje para un cover up?</summary>
+                        <div class="faq-content">
+                            <p>¡Perfecto! El borrado con láser también es <strong>ideal para cover ups</strong>. Posiblemente solo necesitas 2-5 sesiones para aclarar lo suficiente.</p>
+                            <p style="margin-top: 0.5rem;">Comunícate al whatsapp y te asesoraremos sobre cuántas sesiones necesitas para tu nuevo diseño.</p>
+                        </div>
+                    </details>
+                    
+                    <details>
+                        <summary>¿Puedo hacerlo en verano o con sol?</summary>
+                        <div class="faq-content">
+                            <p><strong>Sí, pero con cuidado.</strong> La zona tratada no debe tener sol directo por 2 semanas.</p>
+                            <p style="margin-top: 0.5rem;">Usa bloqueador FPS 50+ y ropa que cubra el área si vas a exponerte. En invierno es más cómodo, pero se puede hacer todo el año.</p>
+                        </div>
+                    </details>
+                    
+                    <details>
+                        <summary>¿Qué tal las cicatrices?</summary>
+                        <div class="faq-content">
+                            <p><strong>Cero cicatrices</strong> cuando sigues los cuidados. Nuestro láser no quema, fragmenta.</p>
+                            <p style="margin-top: 0.5rem;">Es más seguro que un tatuaje mal hecho. Solo necesitas no rascar y humectar bien.</p>
+                        </div>
+                    </details>
+                    
+                    <details>
+                        <summary>¿Y si mi tatuaje está mal hecho o con cicatriz?</summary>
+                        <div class="faq-content">
+                            <p>No pasa nada. El láser también <strong>mejora la textura de cicatrices</strong> y elimina tinta migrada.</p>
+                            <p style="margin-top: 0.5rem;">Muchos clientes vienen por "arreglar" tatuajes fallidos, con relieve, y terminan con piel mucho más uniforme.</p>
+                        </div>
+                    </details>
+            </div>
+        </section>
+            <div class="cta-group">
+                <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Cotizar ahora (30 seg)
+                </a>
+                <a href="#pricing" class="cta-button cta-secondary">🥳 Ver Packs en OFERTA</a>
+            </div>
+        <!-- UBICACIÓN -->
+        <section id="location">
+            <div class="container">
+                <h2 class="animate-in">¿Dónde nos encontramos?</h2>
+                <p class="section-intro animate-in">En el corazón de Santiago, con fácil acceso desde el Metro Irarrázaval.</p>
+                
+                <div class="location-grid animate-in">
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3328.619018445778!2d-70.63000632483842!3d-33.45903999810847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c57703358057%3A0xe8d06f7b11566373!2sAv.%20Portugal%201322%2C%20Santiago%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses-419!2scl!4v1700191252085!5m2!1ses-419!2scl" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-item">
+                            <div>
+                                <strong>Dirección</strong>
+                                <p>Av. Portugal 1322, Santiago<br>a pasos del Metro Irarrázaval</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            
+                            <div>
+                                <strong>Horario</strong>
+                                <p>
+                                    Lunes a Viernes: 9:00 - 18:00 hrs<br>
+                                    Sábados: 9:00 - 14:00 hrs<br>
+                                    <span style="color: var(--color-alerta);">⚠️ Atención solo con cita previa</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                      
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="cta-final">
+            <div class="container">
+                <h2 class="animate-in">Tu piel nueva te espera</h2>
+                <p class="animate-in">Es momento de dar el primer paso. Escríbenos sin compromisos.</p>
+                
+                <div class="urgency-box animate-in">
+                    <strong>🔥 Últimos cupos disponibles con descuento!</strong><br>
+                    <small>Las citas se agotan rápido en temporada alta</small>
+                </div>
+                
+            <div class="cta-group">
+                <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Cotizar ahora (30 seg)
+                </a>
+                <a href="#pricing" class="cta-button cta-secondary">🥳 Ver Packs en OFERTA</a>
+            </div>
+                
+                <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--color-texto-sec);">Respuesta en menos de 60 minutos · Lunes a sábado</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/>
+                </svg>
+            </a>
+            <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.198.297-.768.967-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+            </a>
+        </div>
+        
+
+        <div class="footer-links">
+            <a href="/tyc.html">Términos y Condiciones</a>
+            <a href="/politica-privacidad.html" class="active">Política de Privacidad</a>
+            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/sistema-3k.html">Sistema 3K</a>
+        </div>
+        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
+        <p>Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
+
+    </footer>
+
+    <!-- BOTÓN WHATSAPP FIJO -->
+    <a href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20el%20borrado%20de%20mi%20tatuaje" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Cotizar por WhatsApp">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.198.297-.768.967-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script>
+        // FAQ solo una abierta
+        document.addEventListener('DOMContentLoaded', () => {
+            const allDetails = document.querySelectorAll('details');
+            
+            allDetails.forEach(details => {
+                details.addEventListener('toggle', event => {
+                    if (details.open) {
+                        allDetails.forEach(otherDetails => {
+                            if (otherDetails !== details) {
+                                otherDetails.open = false;
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Scroll animations
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            const animateElements = document.querySelectorAll('.animate-in');
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1)';
+                observer.observe(el);
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Countdown timer (actualiza cada segundo)
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const launchDate = new Date('2025-12-01T23:59:59').getTime(); // Fecha límite
+                const distance = launchDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+                if (distance < 0) {
+                    document.getElementById('countdown').innerHTML = '<p style="color: var(--color-alerta); font-size: 1.5rem; font-weight: 800;">OFERTA FINALIZADA</p>';
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown(); // Ejecutar al cargar
+        });
+    </script>
+
+</body>
+</html>

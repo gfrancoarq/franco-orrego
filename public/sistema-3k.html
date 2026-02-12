@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plan de Negocios Sistema 3K: El sistema paso a paso para tatuadores que quieren especializarse, potenciar su marca y generar $3K mensuales.">
+    
+    <title>Plan Sistema 3K | Franco Orrego Tattoos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-primario: #00D4FF;
+            --color-exito: #06D6A0;
+            --color-alerta: #FF6B6B;
+            --color-fondo: #0A0A0B;
+            --color-fondo-sec: #121214;
+            --color-borde: #252529;
+            --color-titulo: #FFFFFF;
+            --color-texto: #E5E5E7;
+            --color-texto-sec: #A0A0A3;
+            --sombra-lg: 0 20px 25px -5px rgba(0, 212, 255, 0.1);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0099FF 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .header-bar.scrolled {
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 50px;
+            background: var(--gradiente);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .header-cta {
+            padding: 10px 20px;
+            background: var(--gradiente);
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            color: var(--color-titulo);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: var(--color-texto-sec);
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            color: var(--color-primario);
+            font-weight: 600;
+        }
+
+        .highlight-success {
+            color: var(--color-exito);
+            font-weight: 700;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        linear-gradient(rgba(10, 10, 11, 0.95), rgba(10, 10, 11, 0.98));
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            padding: 0 2rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--color-primario);
+            color: var(--color-primario);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        /* --- BENEFICIOS PDF --- */
+        .benefits-box {
+            background: var(--color-fondo-sec);
+            border: 1px solid var(--color-borde);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .benefit-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradiente);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .benefit-item h3 {
+            margin-bottom: 0.25rem;
+        }
+
+        .benefit-item p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* --- TESTIMONIOS --- */
+        .testimonial-box {
+            background: var(--color-fondo-sec);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--color-borde);
+            margin: 2rem 0;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: var(--color-texto);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradiente);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* --- PRECIO --- */
+        .price-box {
+            text-align: center;
+            background: var(--color-fondo-sec);
+            border: 1px solid var(--color-borde);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .price-tag {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--color-primario);
+            margin: 1rem 0;
+            line-height: 1;
+        }
+
+        .price-tag span {
+            font-size: 1.5rem;
+            color: var(--color-texto-sec);
+        }
+
+        .price-box p {
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-primary {
+            background: var(--gradiente);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        /* --- GARANTÍA --- */
+        .garantia-box {
+            background: rgba(6, 214, 160, 0.05);
+            border: 1px solid var(--color-exito);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .garantia-box svg {
+            flex-shrink: 0;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .price-tag {
+                font-size: 3rem;
+            }
+
+            .container {
+                padding: 60px 0;
+            }
+        }
+                /* --- FOOTER --- */
+        footer {
+            background: var(--color-fondo-sec);
+            text-align: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--color-borde);
+            color: var(--color-texto-sec);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primario);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            margin: 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-bar">
+        <a href="/" class="logo">
+            <div class="logo-icon">FOTS</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+        <a href="#comprar" class="header-cta">Comprar PDF</a>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <div class="hero-badge">Plan de Negocios en PDF: Sistema 3K Pro</div>
+            <h1>El Sistema Definitivo para Tatuar y Facturar <span class="highlight">desde $3K Mensuales</span></h1>
+            <p style="color: var(--color-texto-sec);">El mismo sistema que yo uso y enseño, ahora en un detallado plan paso a paso que puedes implementar hoy mismo.</p>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS DEL PDF -->
+    <section id="beneficios">
+        <div class="container">
+            <h2 class="animate-in">¿Qué encuentras en este plan?</h2>
+            
+            <div class="benefits-box animate-in">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <div>
+                        <h3>Sistema de Especialización</h3>
+                        <p>Cómo elegir tu nicho de alto valor (blackwork, realismo, ornamental, etc.) y posicionarte como experto, no como generalista.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <div>
+                        <h3>Potenciación de Marca Personal</h3>
+                        <p>Estrategia exacta para Instagram y creación de un portfolio que atrae clientes premium.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <div>
+                        <h3>Máquina de Ventas</h3>
+                        <p>Scripts de DM, estructura de precios, cómo cotizar proyectos grandes y cerrar clientes sin sentirte vendedor.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <div>
+                        <h3>Plan Financiero 3K</h3>
+                        <p>Cuánto cobrar, cuántas sesiones necesitas, cómo gestionar ingresos/egresos y alcanzar la meta de $3.000/mes estable.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <div>
+                        <h3>Ruta de Crecimiento</h3>
+                        <p>Qué hacer en los primeros 30, 60 y 90 días. Checklists, herramientas y métricas para medir tu progreso.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIO -->
+    <section id="testimonios">
+        <div class="container">
+            <h2 class="animate-in">¿Funciona?</h2>
+            
+            <div class="testimonial-box animate-in">
+                <p class="testimonial-text">"Apliqué el sistema en 3 meses. Pasé de generar menos de 1000 al mes a más de 3000. El PDF es directo, sin relleno. Vale cada centavo."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">LC</div>
+                    <div>
+                        <strong>Luis Castro</strong><br>
+                        <span style="color: var(--color-texto-sec);">Tatuador, Ciudad de México</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRECIO Y CTA -->
+    <section id="comprar">
+        <div class="container">
+            <div class="price-box animate-in">
+                <p style="text-transform: uppercase; font-size: 0.9rem; color: var(--color-texto-sec);">Acceso inmediato</p>
+                <div class="price-tag">
+                    $<span>37</span>
+                    <span style="font-size: 1rem; color: var(--color-texto-sec);">USD</span>
+                </div>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem;">Una inversión de bajo riesgo, retorno infinito.</p>
+                
+                <a href="#" class="cta-button cta-primary">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    Comprar PDF
+                </a>
+                
+                <div class="garantia-box">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div>
+                        <strong>Garantía 100%</strong><br>
+                        Si el plan no te aporta valor, te devolvemos tu dinero en 7 días. Sin preguntas.
+                    </div>
+                </div>
+                
+                <p style="font-size: 0.85rem; color: var(--color-texto-sec); margin-top: 1.5rem;">
+                    Recibes el PDF en tu mail inmediatamente tras la compra. Soporte vía WhatsApp.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/tyc.html">Términos y Condiciones</a>
+            <a href="/politica-privacidad.html" class="active">Política de Privacidad</a>
+            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/sistema-3k.html">Sistema 3K</a>
+        </div>
+        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
+        <p>Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Intersection Observer para animaciones
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>

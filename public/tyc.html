@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Términos y condiciones de servicio. Franco Orrego Tattoo Studio.">
+    <title>Términos y Condiciones | Franco Orrego Tattoo Studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SISTEMA DE DISEÑO --- */
+        :root {
+            --color-primario: #00D4FF;
+            --color-primario-oscuro: #008CB3;
+            --color-alerta: #FF4444;
+            --color-exito: #00C851;
+            
+            --color-fondo: #050506; 
+            --color-fondo-sec: #0F0F11;
+            --color-borde: #2A2A30;
+            
+            --color-titulo: #FFFFFF;
+            --color-texto: #C0C0C4;
+            --color-texto-sec: #8A8A8E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* TEXTURA DE FONDO (NOISE) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* --- TIPOGRAFÍA --- */
+        h1, h2, h3 {
+            color: var(--color-titulo);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-primario);
+            font-weight: 600;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-borde);
+            padding-bottom: 0.5rem;
+            color: var(--color-titulo);
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            color: var(--color-primario);
+            margin-bottom: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        p, ul {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-texto-sec);
+        }
+
+        li::before {
+            content: "›";
+            position: absolute;
+            left: 0;
+            color: var(--color-primario);
+            font-weight: bold;
+        }
+
+        /* --- CONTENEDORES --- */
+        .policy-card {
+            background: var(--color-fondo-sec);
+            border: 1px solid var(--color-borde);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .policy-card:hover {
+            border-color: #444;
+        }
+
+        .alert-box {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .alert-important {
+            border-color: var(--color-primario);
+        }
+        
+        .alert-warning {
+            border-color: var(--color-alerta);
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: center; /* Centrar logo */
+            border-bottom: 1px solid var(--color-borde);
+            background: rgba(5,5,6,0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--color-primario);
+            letter-spacing: -1px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            background: #000;
+            color: var(--color-texto-sec);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--color-borde);
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .policy-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-bar">
+        <a href="/" class="logo">
+            <div class="logo-icon">FO</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+    </header>
+
+    <div class="container">
+        <h1>Términos y Condiciones</h1>
+        <p class="subtitle">Reglamento de Servicio 2026</p>
+
+        <div class="alert-box alert-important">
+            <p><strong>IMPORTANTE:</strong> Al realizar el abono de reserva, el cliente declara haber leído, comprendido y aceptado en su totalidad las políticas aquí expuestas.</p>
+        </div>
+
+        <!-- SECCIÓN 1 -->
+        <div class="policy-card">
+            <h2>01. Requisitos del Cliente</h2>
+            
+            <h3>Identificación y Edad</h3>
+            <ul>
+                <li><strong>Mayores de 18 años:</strong> Presentar cédula de identidad vigente.</li>
+                <li><strong>Menores de 15 a 17 años:</strong> Solo con autorización escrita y presencia física del padre/madre o tutor legal (con cédula) durante toda la sesión.</li>
+            </ul>
+
+            <h3>Salud y Condiciones Médicas</h3>
+            <p>Debes informar previamente sobre:</p>
+            <ul>
+                <li>Diabetes, hemofilia, problemas de cicatrización.</li>
+                <li>Enfermedades de la piel, infecciones, alergias.</li>
+                <li>Embarazo o período de lactancia.</li>
+                <li>Consumo de medicamentos que afecten la coagulación.</li>
+            </ul>
+            <p style="font-size: 0.85rem; opacity: 0.8;">El estudio se reserva el derecho de rechazar el servicio si existe riesgo para tu salud.</p>
+        </div>
+
+        <!-- SECCIÓN 2 -->
+        <div class="policy-card">
+            <h2>02. Reservas y Pagos</h2>
+            
+            <h3>Abono de Reserva</h3>
+            <p><strong>Obligatorio para confirmar tu cita.</strong></p>
+            <ul>
+                <li>Monto especificado en cotización.</li>
+                <li><strong>No es reembolsable ni transferible.</strong></li>
+                <li>Se descuenta del valor total.</li>
+            </ul>
+
+            <h3>Política de Reagendamiento</h3>
+            <ul>
+                <li><strong>1 reagendamiento gratuito</strong> con mínimo 7 días de anticipación.</li>
+                <li><strong>2° reagendamiento:</strong> $40.000 CLP (no descontable del tatuaje).</li>
+                <li><strong>Cancelación o aviso fuera de plazo:</strong> Pérdida total del abono.</li>
+            </ul>
+            
+            <div class="alert-box alert-warning" style="border-left-color: var(--color-alerta);">
+                <p style="margin-bottom:0;">⚠️ <strong>No se hacen excepciones:</strong> Las cancelaciones de último momento afectan nuestra planificación y no podemos ofrecer el espacio a otros clientes.</p>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3 -->
+        <div class="policy-card">
+            <h2>03. El Día de tu Tatuaje</h2>
+            
+            <h3>Puntualidad</h3>
+            <p>Tolerancia de 30 minutos para ambas partes. Llega entre 5 min antes y 5 min después de tu hora.</p>
+
+            <h3>Acompañantes</h3>
+            <p><strong>No se permiten acompañantes</strong> para mantener un ambiente estéril y concentrado. Excepciones justificadas: 1 acompañante máximo (avisar previamente).</p>
+
+            <h3>Ropa Adecuada</h3>
+            <p>Trae ropa cómoda y oscura que permita acceder fácilmente a la zona a tatuar.</p>
+            <ul>
+                <li><strong>Mujeres:</strong> Para pecho/espalda, traer pezoneras. Para cadera/glúteo, bikini o ropa interior cómoda y no transparente.</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 4 -->
+        <div class="policy-card">
+            <h2>04. Garantía de Retoque</h2>
+            
+            <h3>¿Cuándo aplica?</h3>
+            <p>Un (1) retoque sin costo entre <strong>30 y 60 días</strong> después del tatuaje, SIEMPRE QUE:</p>
+            <ul>
+                <li>Hayas cumplido todos los cuidados post-tatuaje.</li>
+                <li>La pieza no esté en zonas de exclusión.</li>
+                <li>Se haya agendado dentro del plazo.</li>
+            </ul>
+
+            <h3>Zonas SIN retoque gratuito</h3>
+            <div class="alert-box alert-warning">
+                <p style="margin-bottom:0;">Dedos, manos, pies, tobillos, orejas, detrás de orejas, boca, rostro, cuello y muñecas.</p>
+            </div>
+            <p>Estas zonas tienen alto desgaste natural. El cliente asume el riesgo y costo de retoques futuros.</p>
+
+            <h3>Costo de Retoque</h3>
+            <ul>
+                <li>Si no aplica garantía: $30.000 - $50.000 CLP (según tamaño y complejidad).</li>
+                <li><strong>Retoque paralelo a nuevo proyecto:</strong> 50% de descuento (dentro de 6 meses).</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 5 -->
+        <div class="policy-card">
+            <h2>05. Políticas Adicionales</h2>
+            
+            <h3>Proyectos de Múltiples Sesiones</h3>
+            <ul>
+                <li>Si el artista decide continuar otro día por calidad: <strong>sin costo extra</strong>.</li>
+                <li>Si tú solicitas parar por manejo del dolor u otros motivos: <strong>sesión adicional con costo proporcional</strong>.</li>
+            </ul>
+
+            <h3>Vigencia de Cotizaciones</h3>
+            <p>Los precios acordados son válidos por <strong>1 año</strong> desde la reserva. Promociones especiales pueden tener plazos menores.</p>
+        </div>
+        
+        <!-- SECCIÓN 6 -->
+        <div class="policy-card">
+            <h2>06. Uso de Imágenes</h2>
+            <p>Al aceptar estos términos, autorizas al estudio a tomar fotos/videos del tatuaje para uso en portafolio y redes sociales, respetando tu anonimato si lo solicitas específicamente.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem; opacity: 0.6;">
+            <p>Franco Orrego Tattoo Studio</p>
+            <p style="font-size: 0.8rem;">Santiago de Chile · 2026</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/tattoo.html">Estudio</a>
+            <a href="/borrado.html">Borrado Láser</a>
+        </div>
+        <p style="opacity: 0.5;">© 2025 - 2026 Franco Orrego Tattoo Studio</p>
+        <p style="opacity: 0.5; margin-top: 5px;">Av. Portugal 1322, Santiago</p>
+    </footer>
+
+</body>
+</html>
