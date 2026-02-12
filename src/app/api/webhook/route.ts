@@ -140,6 +140,8 @@ Tienes acceso a una herramienta para ver la disponibilidad real (check_availabil
 - Usa la herramienta para ver los huecos reales que coincidan con las REGLAS DE AGENDA.
 - Ofrece 2 o 3 opciones concretas.L ...`;
 
+// ... (Línea 143: termina el prompt) ...
+
 // Configuración
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
@@ -160,75 +162,81 @@ export async function GET(req: Request) {
 // 2. RECIBIR MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
+  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
-  // Verificar si es un mensaje real
-  if (body.object && body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
-    const message = body.entry[0].changes[0].value.messages[0];
-    const from = message.from; // Número del cliente
-    const text = message.text?.body || "Mensaje sin texto (posible foto/audio)"; 
-    // NOTA: Aquí habría que agregar lógica para descargar fotos/audios si vienen.
+  // Si no es un mensaje válido, terminamos rápido
+  if (!message) return new NextResponse('OK', { status: 200 });
 
-// A. Guardar en Supabase (CORREGIDO: phone_number en lugar de chat_id)
-    await supabase.from('messages').insert({ 
+  const messageId = message.id; // ID único que envía Meta
+  const from = message.from;
+  const text = message.text?.body || "Mensaje sin texto";
+
+  // A. ANTI-SPAM: Intento de insertar el mensaje del usuario
+  // Si Meta reintenta enviarlo, Supabase dará error de duplicado (code 23505) y detendremos el proceso.
+  const { error: insertError } = await supabase
+    .from('messages')
+    .insert({ 
         phone_number: from, 
         role: 'user', 
-        content: text 
+        content: text,
+        message_id: messageId 
     });
 
-    // B. Consultar historial (CORREGIDO: phone_number)
-    const { data: history } = await supabase
-      .from('messages')
-      .select('role, content')
-      .eq('phone_number', from)
-      .order('created_at', { ascending: true })
-      .limit(10);
-
-    const chatHistory = history?.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-    })) || [];
-
-    // C. Invocar a Alicia (Gemini)
-    const model = genAI.getGenerativeModel({ 
-        model: "gemini-3-flash-preview",
-        systemInstruction: ALICIA_PROMPT 
-    });
-
-    const chat = model.startChat({ history: chatHistory });
-    const result = await chat.sendMessage(text);
-    const responseText = result.response.text();
-
-
-  // ... después de generar responseText con Gemini ...
-
-// Dividimos el texto por puntos apartes o saltos de línea
-const messagesToSend = responseText
-  .split(/\n|\. /) 
-  .filter(msg => msg.trim().length > 0);
-
-for (const textChunk of messagesToSend) {
-  await sendToWhatsApp(from, textChunk.trim());
-  // Simulamos que Alicia está escribiendo el siguiente mensaje
-  await new Promise(resolve => setTimeout(resolve, 2000)); 
-}
-
-    // E. Guardar respuesta (CORREGIDO: phone_number)
-    await supabase.from('messages').insert({ 
-        phone_number: from, 
-        role: 'assistant', 
-        content: responseText 
-    });
+  if (insertError && insertError.code === '23505') {
+    return new NextResponse('Duplicate handled', { status: 200 });
   }
+
+  // B. CONSULTAR HISTORIAL (Para que Alicia tenga memoria)
+  const { data: history } = await supabase
+    .from('messages')
+    .select('role, content')
+    .eq('phone_number', from)
+    .order('created_at', { ascending: true })
+    .limit(10);
+
+  const chatHistory = history?.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }]
+  })) || [];
+
+  // C. INVOCAR A ALICIA (Gemini)
+  const model = genAI.getGenerativeModel({ 
+      model: "gemini-3-flash-preview", // Versión estable
+      systemInstruction: ALICIA_PROMPT 
+  });
+
+  const chat = model.startChat({ history: chatHistory });
+  const result = await chat.sendMessage(text);
+  const responseText = result.response.text();
+
+  // D. RESPUESTA FRACCIONADA Y NATURAL
+  // Dividimos por saltos de línea para enviar "burbujas" independientes
+  const messagesToSend = responseText
+    .split(/\n+/) 
+    .filter(msg => msg.trim().length > 0);
+
+  for (const textChunk of messagesToSend) {
+    await sendToWhatsApp(from, textChunk.trim());
+    // Pausa de 5 segundos entre burbujas para simular escritura humana
+    await new Promise(resolve => setTimeout(resolve, 5000)); 
+  }
+
+  // E. GUARDAR RESPUESTA DE ALICIA EN SUPABASE
+  await supabase.from('messages').insert({ 
+      phone_number: from, 
+      role: 'assistant', 
+      content: responseText 
+  });
 
   return new NextResponse('OK', { status: 200 });
 }
 
-// Función auxiliar para enviar a Meta
+// Función auxiliar para enviar a Meta (v22.0)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.META_TOKEN}`,
+      'Authorization': `Bearer ${process.env.META_TOKEN}`, // Aquí ya usa tu Token Permanente
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
