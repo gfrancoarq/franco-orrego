@@ -156,18 +156,21 @@ export async function POST(req: Request) {
     const text = message.text?.body || "Mensaje sin texto (posible foto/audio)"; 
     // NOTA: Aquí habría que agregar lógica para descargar fotos/audios si vienen.
 
-    // A. Guardar mensaje del usuario en Supabase
-    await supabase.from('messages').insert({ chat_id: from, role: 'user', content: text });
+// A. Guardar en Supabase (CORREGIDO: phone_number en lugar de chat_id)
+    await supabase.from('messages').insert({ 
+        phone_number: from, 
+        role: 'user', 
+        content: text 
+    });
 
-    // B. Consultar historial reciente para contexto
+    // B. Consultar historial (CORREGIDO: phone_number)
     const { data: history } = await supabase
       .from('messages')
       .select('role, content')
-      .eq('chat_id', from)
+      .eq('phone_number', from)
       .order('created_at', { ascending: true })
       .limit(10);
 
-    // Formatear historial para Gemini
     const chatHistory = history?.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }]
@@ -186,8 +189,12 @@ export async function POST(req: Request) {
     // D. Responder vía WhatsApp API
     await sendToWhatsApp(from, responseText);
 
-    // E. Guardar respuesta de Alicia en Supabase
-    await supabase.from('messages').insert({ chat_id: from, role: 'assistant', content: responseText });
+    // E. Guardar respuesta (CORREGIDO: phone_number)
+    await supabase.from('messages').insert({ 
+        phone_number: from, 
+        role: 'assistant', 
+        content: responseText 
+    });
   }
 
   return new NextResponse('OK', { status: 200 });
@@ -195,7 +202,7 @@ export async function POST(req: Request) {
 
 // Función auxiliar para enviar a Meta
 async function sendToWhatsApp(to: string, text: string) {
-  await fetch(`https://graph.facebook.com/v18.0/${process.env.META_PHONE_ID}/messages`, {
+  await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.META_TOKEN}`,
