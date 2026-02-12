@@ -156,26 +156,16 @@ Si preguntan algo fuera de libreto o muy específico que no sepas:
 Tienes acceso a una herramienta para ver la disponibilidad real (check_availability).
 - Cuando el cliente pregunte por fechas o acepte el presupuesto: NO inventes fechas.
 - Usa la herramienta para ver los huecos reales que coincidan con las REGLAS DE AGENDA.
-- Ofrece 2 o 3 opciones concretas.L ...`;
+- Ofrece 2 o 3 opciones concretas. ...
 
-// ... (Línea 160: termina el prompt ALICIA_PROMPT) ...
+# REGLA DE ORO: FOCO EN CIERRE
+- No des más de 2 opciones. 
+- Sé concisa. Si el cliente ya tiene el precio, tu ÚNICO objetivo es que pida las fechas y los datos de transferencia.
+- Usa frases como: "¿Te mando las fechas y los datos para reservar?" o "¿Quieres asegurar tu cupo de una vez?".
+- PROHIBIDO: Ofrecer "simplificar el diseño" a menos que el cliente diga explícitamente que no tiene el dinero.
+`;
 
-import Groq from "groq-sdk";
-
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
-
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const mode = searchParams.get('hub.mode');
-  const token = searchParams.get('hub.verify_token');
-  const challenge = searchParams.get('hub.challenge');
-
-  if (mode === 'subscribe' && token === process.env.WEBHOOK_VERIFY_TOKEN) {
-    return new NextResponse(challenge, { status: 200 });
-  }
-  return new NextResponse('Forbidden', { status: 403 });
-}
+// ... (Línea 160 en adelante)
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -184,99 +174,62 @@ export async function POST(req: Request) {
 
   if (!message) return new NextResponse('OK', { status: 200 });
 
-  const messageId = message.id; 
   const from = message.from;
-  let text = message.text?.body || "";
+  const text = message.text?.body || "";
 
-  // A. ANTI-SPAM Y REGISTRO DE MENSAJE
+  // A. GUARDAR MENSAJE (Anti-Spam incluido)
   const { error: insertError } = await supabase
     .from('messages')
-    .insert({ 
-        phone_number: from, 
-        role: 'user', 
-        content: text,
-        message_id: messageId 
-    });
+    .insert({ phone_number: from, role: 'user', content: text, message_id: message.id });
 
-  if (insertError && insertError.code === '23505') return new NextResponse('Duplicate handled', { status: 200 });
+  if (insertError && insertError.code === '23505') return new NextResponse('OK', { status: 200 });
 
-  // B. GESTIÓN DE CHAT Y TEMPERATURA
-  const { data: chatData } = await supabase
-    .from('chats')
-    .upsert({ phone_number: from }, { onConflict: 'phone_number' })
-    .select().single();
+  // B. EXTRACCIÓN DE NOMBRE (Lógica mejorada)
+  // Si el cliente dice "Soy X" o "Me llamo X", lo guardamos de una.
+  const nameMatch = text.match(/(?:soy|llam[oa]|nombre es)\s+([A-Z][a-z]+)/i);
+  if (nameMatch && nameMatch[1]) {
+    await supabase.from('customers').upsert({ 
+      phone_number: from, 
+      full_name: nameMatch[1] 
+    }, { onConflict: 'phone_number' });
+  }
 
+  // C. GESTIÓN DE CHAT Y TEMPERATURA
+  const { data: chatData } = await supabase.from('chats').upsert({ phone_number: from }, { onConflict: 'phone_number' }).select().single();
   let msgCount = (chatData?.total_messages || 0) + 1;
   let currentTemp = chatData?.lead_temperature || 'frio';
 
-  if (msgCount > 5 || text.toLowerCase().includes('precio')) currentTemp = 'tibio';
-  if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
+  if (msgCount > 4 || text.toLowerCase().includes('precio')) currentTemp = 'tibio';
+  if (currentTemp === 'tibio' && (text.includes('reserva') || text.includes('fecha'))) currentTemp = 'caliente';
 
-  await supabase.from('chats').update({ 
-      total_messages: msgCount, 
-      lead_temperature: currentTemp 
-  }).eq('phone_number', from);
+  await supabase.from('chats').update({ total_messages: msgCount, lead_temperature: currentTemp }).eq('phone_number', from);
 
-  // C. OBTENER DATOS DEL CLIENTE
-  const { data: customerData } = await supabase
-    .from('customers')
-    .select('full_name')
-    .eq('phone_number', from)
-    .maybeSingle();
+  // D. CONSULTA DE DATOS PARA CONTEXTO
+  const { data: customer } = await supabase.from('customers').select('full_name').eq('phone_number', from).maybeSingle();
+  const { data: history } = await supabase.from('messages').select('role, content').eq('phone_number', from).order('created_at', { ascending: true }).limit(8);
 
-  // D. CONSULTAR HISTORIAL PARA GROQ
-  const { data: history } = await supabase
-    .from('messages')
-    .select('role, content')
-    .eq('phone_number', from)
-    .order('created_at', { ascending: true })
-    .limit(10);
-
-  const messagesForGroq = [
-    { role: "system", content: ALICIA_PROMPT + `\n(Info interna: Cliente ${customerData?.full_name || 'Desconocido'}. Lead ${currentTemp})` },
-    ...history.map((msg: any) => ({
-      role: msg.role === 'user' ? 'user' : 'assistant',
-      content: msg.content
-    })),
-    { role: "user", content: text }
-  ];
-
-  // E. INVOCAR A GROQ (Ultra rápido)
+  // E. RESPUESTA CON GROQ (LLAMA 3.3)
+  const promptFinal = ALICIA_PROMPT + `\n(Cliente: ${customer?.full_name || 'Desconocido'}. Lead: ${currentTemp})`;
+  
   const completion = await groq.chat.completions.create({
-    messages: messagesForGroq as any,
+    messages: [
+      { role: "system", content: promptFinal },
+      ...history.map((msg: any) => ({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content })),
+      { role: "user", content: text }
+    ],
     model: "llama-3.3-70b-versatile",
+    max_tokens: 150 // Limitamos los tokens para que no escriba testamentos
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
 
-  // F. RESPUESTA FRACCIONADA Y NATURAL
+  // F. ENVÍO FRACCIONADO
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
-    await new Promise(resolve => setTimeout(resolve, 3500)); 
+    await new Promise(resolve => setTimeout(resolve, 3000)); 
   }
 
-  // G. GUARDAR RESPUESTA DE ALICIA
-  await supabase.from('messages').insert({ 
-      phone_number: from, 
-      role: 'assistant', 
-      content: responseText 
-  });
-
+  await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
   return new NextResponse('OK', { status: 200 });
-}
-
-async function sendToWhatsApp(to: string, text: string) {
-  await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.META_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      messaging_product: 'whatsapp',
-      to: to,
-      text: { body: text },
-    }),
-  });
 }
