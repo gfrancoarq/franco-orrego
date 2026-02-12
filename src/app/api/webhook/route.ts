@@ -175,7 +175,7 @@ export async function POST(req: Request) {
 
     // C. Invocar a Alicia (Gemini)
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-3-flash-preview",
         systemInstruction: ALICIA_PROMPT 
     });
 
