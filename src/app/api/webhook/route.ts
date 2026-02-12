@@ -160,11 +160,9 @@ Tienes acceso a una herramienta para ver la disponibilidad real (check_availabil
 
 // ... (Línea 160: termina el prompt ALICIA_PROMPT) ...
 
-// Configuración de Clientes y Conexiones
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// 1. VERIFICACIÓN DEL WEBHOOK (Para Meta)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get('hub.mode');
@@ -177,13 +175,11 @@ export async function GET(req: Request) {
   return new NextResponse('Forbidden', { status: 403 });
 }
 
-// 2. RECIBIR MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
   const entry = body.entry?.[0]?.changes?.[0]?.value;
   const message = entry?.messages?.[0];
 
-  // Si no es un mensaje válido, terminamos rápido
   if (!message) return new NextResponse('OK', { status: 200 });
 
   const messageId = message.id; 
@@ -191,13 +187,12 @@ export async function POST(req: Request) {
   let text = message.text?.body || "";
   let mediaId = null;
 
-  // A. LÓGICA DE MULTIMODALIDAD (Detección de Imagen)
   if (message.type === 'image') {
     mediaId = message.image.id;
-    text = "[EL CLIENTE ENVIÓ UNA IMAGEN DE REFERENCIA O COMPROBANTE. Analízala visualmente y responde con autoridad]";
+    text = "[EL CLIENTE ENVIÓ UNA IMAGEN]";
   }
 
-  // B. ANTI-SPAM: Registro de mensaje del usuario
+  // A. GUARDAR MENSAJE Y ANTI-SPAM
   const { error: insertError } = await supabase
     .from('messages')
     .insert({ 
@@ -205,14 +200,12 @@ export async function POST(req: Request) {
         role: 'user', 
         content: text,
         message_id: messageId,
-        media_url: mediaId // Guardamos el ID de Meta para descargarlo luego
+        media_url: mediaId 
     });
 
-  if (insertError && insertError.code === '23505') {
-    return new NextResponse('Duplicate handled', { status: 200 });
-  }
+  if (insertError && insertError.code === '23505') return new NextResponse('Duplicate', { status: 200 });
 
-  // C. GESTIÓN DE LEAD (Temperatura y Nombre)
+  // B. GESTIÓN DE LEAD
   const { data: chatData } = await supabase
     .from('chats')
     .upsert({ phone_number: from }, { onConflict: 'phone_number' })
@@ -225,57 +218,34 @@ export async function POST(req: Request) {
     .eq('phone_number', from)
     .maybeSingle();
 
-  // Lógica de Temperatura Evolucionada
   let currentTemp = chatData?.lead_temperature || 'frio';
   const msgCount = (chatData?.total_messages || 0) + 1;
   
-  if (msgCount > 6) currentTemp = 'tibio';
-  if (text.toLowerCase().includes('precio') || text.toLowerCase().includes('cuanto vale') || text.toLowerCase().includes('$')) {
-      currentTemp = 'tibio';
-  }
-  if (currentTemp === 'tibio' && (msgCount > 10 || text.includes('transferencia') || text.includes('comprobante'))) {
-      currentTemp = 'caliente';
-  }
+  if (msgCount > 5) currentTemp = 'tibio';
+  if (text.toLowerCase().includes('precio')) currentTemp = 'tibio';
+  if (currentTemp === 'tibio' && msgCount > 10) currentTemp = 'caliente';
 
   await supabase.from('chats').update({ 
       total_messages: msgCount, 
       lead_temperature: currentTemp 
   }).eq('phone_number', from);
 
-  // D. EXTRACCIÓN AUTOMÁTICA DE DATOS (Background task simulada)
-  if (text.length > 10 && !text.includes("[")) {
-      const extractionPrompt = `Extrae datos de este texto: "${text}". Responde SOLO un JSON: {"name": "...", "ig": "...", "birth": "..."}. Si no hay nada, responde "NULL".`;
-      const extraction = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(extractionPrompt);
-      const rawJson = extraction.response.text();
-      if (!rawJson.includes("NULL")) {
-          try {
-              const d = JSON.parse(rawJson);
-              await supabase.from('customers').upsert({
-                  phone_number: from,
-                  full_name: d.name !== "..." ? d.name : customerData?.full_name,
-                  instagram_user: d.ig !== "..." ? d.ig : customerData?.instagram_user,
-                  birth_date: d.birth !== "..." ? d.birth : customerData?.birth_date
-              }, { onConflict: 'phone_number' });
-          } catch (e) {}
-      }
-  }
-
-  // E. CONSULTAR HISTORIAL Y CONTEXTO
+  // C. HISTORIAL
   const { data: history } = await supabase
     .from('messages')
     .select('role, content')
     .eq('phone_number', from)
     .order('created_at', { ascending: true })
-    .limit(12);
+    .limit(10);
 
   const chatHistory = history?.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
   })) || [];
 
-  const contextoLead = `\n(INFO INTERNA: Cliente: ${customerData?.full_name || 'Sin nombre'}. Temp: ${currentTemp}. Mensajes: ${msgCount})`;
+  const contextoLead = `\n(Lead: ${currentTemp}. Nombre: ${customerData?.full_name || 'Desconocido'})`;
 
-  // F. INVOCAR A ALICIA (Gemini 3 Flash Preview)
+  // D. RESPUESTA ALICIA (gemini-3-flash-preview)
   const model = genAI.getGenerativeModel({ 
       model: "gemini-3-flash-preview", 
       systemInstruction: ALICIA_PROMPT + contextoLead
@@ -285,16 +255,13 @@ export async function POST(req: Request) {
   const result = await chat.sendMessage(text);
   const responseText = result.response.text();
 
-  // G. RESPUESTA FRACCIONADA Y NATURAL
+  // E. ENVÍO Y PAUSAS
   const paragraphs = responseText.split(/\n+/).filter(p => p.trim().length > 0);
-
   for (const p of paragraphs) {
     await sendToWhatsApp(from, p.trim());
-    // Pausa de 4 segundos para simular gestión humana
     await new Promise(resolve => setTimeout(resolve, 4000)); 
   }
 
-  // H. GUARDAR RESPUESTA DE ALICIA
   await supabase.from('messages').insert({ 
       phone_number: from, 
       role: 'assistant', 
@@ -304,12 +271,11 @@ export async function POST(req: Request) {
   return new NextResponse('OK', { status: 200 });
 }
 
-// Función de envío a Meta v22.0
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.META_TOKEN}`, // Token Permanente ya configurado
+      'Authorization': `Bearer ${process.env.META_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
