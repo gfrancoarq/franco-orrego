@@ -58,9 +58,10 @@ export async function POST(req: Request) {
     .select('role, content').eq('phone_number', from).order('created_at', { ascending: false }).limit(6);
   
   const cleanHistory = (history || []).reverse();
+  // Detecta si Alicia ya entregó un precio para activar el filtro de interés
   const yaCotizado = cleanHistory.some(m => m.role === 'assistant' && (m.content.includes('$') || m.content.includes('sesión')));
 
-  // C. FILTRO DE INTERÉS (Solo manual si ya se cotizó)
+  // C. FILTRO DE INTERÉS REAL (Solo manual si hay intención POST-COTIZACIÓN)
   if (yaCotizado && text.toLowerCase().match(/interesa|quiero|hacerlo|agendar|fecha|reserva/)) {
     await supabase.from('chats').update({ is_manual: true, lead_temperature: 'caliente' }).eq('phone_number', from);
     await sendToWhatsApp(from, "¡Excelente! Como ya tienes el presupuesto, le aviso a Mari para que vea la agenda contigo ahora mismo. 🤘");
@@ -69,24 +70,24 @@ export async function POST(req: Request) {
 
   // D. RESPUESTA CON FAILOVER (Groq -> Gemini)
   let responseText = "";
-  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'}. Identidad: Hablas con el cliente ${from})`;
+  // Inyectamos el contexto de seguridad para que no invente descuentos adicionales
+  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'}. REGLA: $125k ya tiene el 50% OFF. NO rebajes más.)`;
 
   try {
     if (isImage) throw new Error("VISION");
 
-    // Configuración para precisión matemática y brevedad
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: ALICIA_PROMPT + promptContexto },
         ...cleanHistory.map(m => ({ role: m.role, content: m.content }))
       ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0, // Evita alucinaciones de precios
-      max_tokens: 120  // Fuerza mensajes cortos
+      temperature: 0, // Rigurosidad matemática para evitar errores de precio
+      max_tokens: 150  // Mensajes breves y directos
     });
     responseText = completion.choices[0]?.message?.content || "";
   } catch (e) {
-    // Fallback a Gemini si Groq falla o hay imagen
+    // Fallback a Gemini si Groq falla o el cliente envía fotos
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([
@@ -100,6 +101,8 @@ export async function POST(req: Request) {
   // E. DELAY HUMANO Y ENVÍO
   await new Promise(res => setTimeout(res, 3500)); 
   await sendToWhatsApp(from, responseText.trim());
+  
+  // Guardamos la respuesta de la asistente para el historial
   await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
 
   return new NextResponse('OK', { status: 200 });
