@@ -9,7 +9,7 @@ import { ALICIA_PROMPT } from './prompt';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// 3. FUNCIÓN DE ENVÍO (Definida ARRIBA para eliminar el error "Cannot find name")
+// 3. FUNCIÓN DE ENVÍO (Definida arriba para evitar errores de referencia)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
@@ -67,25 +67,26 @@ export async function POST(req: Request) {
     return new NextResponse('OK', { status: 200 });
   }
 
-  // D. RESPUESTA CON VISIÓN SELECTIVA (Failover Groq/Gemini)
+  // D. RESPUESTA CON FAILOVER (Groq -> Gemini)
   let responseText = "";
-  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'}. Hoy es ${new Date().toLocaleDateString('es-CL')})`;
+  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'}. Identidad: Hablas con el cliente ${from})`;
 
   try {
-    // Si hay imagen, saltamos directo a Gemini Vision
     if (isImage) throw new Error("VISION");
 
+    // Configuración para precisión matemática y brevedad
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: ALICIA_PROMPT + promptContexto },
         ...cleanHistory.map(m => ({ role: m.role, content: m.content }))
       ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0.2,
-      max_tokens: 250
+      temperature: 0, // Evita alucinaciones de precios
+      max_tokens: 120  // Fuerza mensajes cortos
     });
     responseText = completion.choices[0]?.message?.content || "";
   } catch (e) {
+    // Fallback a Gemini si Groq falla o hay imagen
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([
