@@ -1,8 +1,7 @@
-// 1. IMPORTS (SIEMPRE ARRIBA)
+// 1. IMPORTS
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Groq from "groq-sdk";
-import { google } from 'googleapis';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { ALICIA_PROMPT } from './prompt';
 
@@ -10,14 +9,7 @@ import { ALICIA_PROMPT } from './prompt';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-const auth = new google.auth.JWT({
-  email: process.env.GOOGLE_CALENDAR_EMAIL,
-  key: process.env.GOOGLE_CALENDAR_KEY?.replace(/\\n/g, '\n'),
-  scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
-});
-const calendar = google.calendar({ version: 'v3', auth });
-
-// 3. FUNCIONES AUXILIARES (DEFINIDAS ANTES DEL POST)
+// 3. FUNCIÓN DE ENVÍO (Definida ARRIBA para eliminar el error "Cannot find name")
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
@@ -31,25 +23,6 @@ async function sendToWhatsApp(to: string, text: string) {
       text: { body: text },
     }),
   });
-}
-
-async function getAvailableSlots() {
-  try {
-    const now = new Date();
-    const end = new Date();
-    end.setDate(now.getDate() + 20); 
-    const response = await calendar.events.list({
-      calendarId: 'primary', 
-      timeMin: now.toISOString(),
-      timeMax: end.toISOString(),
-      singleEvents: true,
-      orderBy: 'startTime',
-    });
-    return response.data.items?.map((e: any) => {
-      const d = new Date(e.start.dateTime || e.start.date);
-      return d.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
-    }) || [];
-  } catch (e) { return []; }
 }
 
 // 4. WEBHOOK VERIFICACIÓN (GET)
@@ -72,49 +45,59 @@ export async function POST(req: Request) {
   const text = message.text?.body || "";
   const isImage = message.type === 'image';
 
-  // A. ESTADO MANUAL Y ANTI-SPAM
-  const { data: chatStatus } = await supabase.from('chats').select('is_manual').eq('phone_number', from).maybeSingle();
-  if (chatStatus?.is_manual) return new NextResponse('OK', { status: 200 });
-
-  const { error: insertError } = await supabase.from('messages').insert({ 
-    phone_number: from, role: 'user', content: text, message_id: message.id 
+  // A. GUARDADO Y CONTROL MANUAL
+  await supabase.from('messages').insert({ 
+    phone_number: from, role: 'user', content: text || "[IMAGEN]", message_id: message.id 
   });
-  if (insertError && insertError.code === '23505') return new NextResponse('OK', { status: 200 });
+  
+  const { data: chat } = await supabase.from('chats').select('is_manual').eq('phone_number', from).maybeSingle();
+  if (chat?.is_manual) return new NextResponse('OK', { status: 200 });
 
-  // B. FILTRO DE INTENCIÓN POST-COTIZACIÓN
-  const { data: lastQuotes } = await supabase.from('messages')
-    .select('content').eq('phone_number', from).eq('role', 'assistant')
-    .or('content.ilike.%$%,content.ilike.%sesión%,content.ilike.%valor%').limit(1);
+  // B. MEMORIA Y DETECCIÓN DE COTIZACIÓN
+  const { data: history } = await supabase.from('messages')
+    .select('role, content').eq('phone_number', from).order('created_at', { ascending: false }).limit(6);
+  
+  const cleanHistory = (history || []).reverse();
+  const yaCotizado = cleanHistory.some(m => m.role === 'assistant' && (m.content.includes('$') || m.content.includes('sesión')));
 
-  const cotizacionEntregada = lastQuotes && lastQuotes.length > 0;
-  const tieneIntencion = text.toLowerCase().match(/interesa|quiero|hacerlo|agendar|fecha|reserva/i);
-
-  if (tieneIntencion && cotizacionEntregada) {
+  // C. FILTRO DE INTERÉS (Solo manual si ya se cotizó)
+  if (yaCotizado && text.toLowerCase().match(/interesa|quiero|hacerlo|agendar|fecha|reserva/)) {
     await supabase.from('chats').update({ is_manual: true, lead_temperature: 'caliente' }).eq('phone_number', from);
-    await sendToWhatsApp(from, "¡Excelente decisión! Como ya tienes los detalles del presupuesto, le aviso a Mari ahora mismo para que tome el control y veamos tu fecha. ¡Hablamos pronto! 🤘");
+    await sendToWhatsApp(from, "¡Excelente! Como ya tienes el presupuesto, le aviso a Mari para que vea la agenda contigo ahora mismo. 🤘");
     return new NextResponse('OK', { status: 200 });
   }
 
-  // C. GENERACIÓN DE RESPUESTA (FAILOVER GROQ/GEMINI)
+  // D. RESPUESTA CON VISIÓN SELECTIVA (Failover Groq/Gemini)
   let responseText = "";
-  const promptContexto = `\n(Info: Cotización enviada: ${cotizacionEntregada ? 'SÍ' : 'NO'})`;
+  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'}. Hoy es ${new Date().toLocaleDateString('es-CL')})`;
 
   try {
+    // Si hay imagen, saltamos directo a Gemini Vision
     if (isImage) throw new Error("VISION");
+
     const completion = await groq.chat.completions.create({
-      messages: [{ role: "system", content: ALICIA_PROMPT + promptContexto }, { role: "user", content: text }],
+      messages: [
+        { role: "system", content: ALICIA_PROMPT + promptContexto },
+        ...cleanHistory.map(m => ({ role: m.role, content: m.content }))
+      ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0.3
+      temperature: 0.2,
+      max_tokens: 250
     });
     responseText = completion.choices[0]?.message?.content || "";
   } catch (e) {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([ALICIA_PROMPT + promptContexto, text]);
+    const result = await model.generateContent([
+      ALICIA_PROMPT + promptContexto, 
+      ...cleanHistory.map(m => m.content), 
+      text
+    ]);
     responseText = result.response.text();
   }
 
-  // D. ENVÍO Y GUARDADO
+  // E. DELAY HUMANO Y ENVÍO
+  await new Promise(res => setTimeout(res, 3500)); 
   await sendToWhatsApp(from, responseText.trim());
   await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
 
