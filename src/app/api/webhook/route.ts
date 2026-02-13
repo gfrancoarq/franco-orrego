@@ -18,12 +18,14 @@ const auth = new google.auth.JWT({
 
 const calendar = google.calendar({ version: 'v3', auth });
 
-// Función para obtener disponibilidad real protegiendo privacidad
+// ... (Imports y configuraciones iniciales de Groq/Supabase/Auth se mantienen igual)
+
+// MEJORA: Función de calendario que entrega texto legible y no JSON complejo
 async function getAvailableSlots() {
   try {
     const now = new Date();
     const end = new Date();
-    end.setDate(now.getDate() + 30); // Buscamos en los próximos 30 días
+    end.setDate(now.getDate() + 20); 
 
     const response = await calendar.events.list({
       calendarId: 'primary', 
@@ -31,123 +33,78 @@ async function getAvailableSlots() {
       timeMax: end.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
-      maxResults: 50
     });
 
-    // Filtro de seguridad: Solo enviamos horas ocupadas, no detalles privados
-    return response.data.items?.map((e: any) => ({
-      start: e.start.dateTime || e.start.date,
-      end: e.end.dateTime || e.end.date
-    })) || [];
+    // Convertimos la respuesta de Google en una lista de días legibles para Chile
+    return response.data.items?.map((e: any) => {
+      const d = new Date(e.start.dateTime || e.start.date);
+      return d.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+    }) || [];
   } catch (e) { 
-    console.error("Error al consultar Google Calendar:", e);
+    console.error("Error en Google Calendar:", e);
     return []; 
   }
 }
 
-// 3. WEBHOOK VERIFICACIÓN (GET)
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const mode = searchParams.get('hub.mode');
-  const token = searchParams.get('hub.verify_token');
-  const challenge = searchParams.get('hub.challenge');
-
-  if (mode === 'subscribe' && token === process.env.WEBHOOK_VERIFY_TOKEN) {
-    return new NextResponse(challenge, { status: 200 });
-  }
-  return new NextResponse('Forbidden', { status: 403 });
-}
-
-// 4. PROCESAMIENTO DE MENSAJES (POST)
 export async function POST(req: Request) {
   const body = await req.json();
-  const entry = body.entry?.[0]?.changes?.[0]?.value;
-  const message = entry?.messages?.[0];
+  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
   if (!message) return new NextResponse('OK', { status: 200 });
 
   const from = message.from;
   const text = message.text?.body || "";
-  const messageId = message.id;
 
-  // A. ANTI-SPAM: Evitamos procesar el mismo mensaje de Meta dos veces
-  const { error: insertError } = await supabase
-    .from('messages')
-    .insert({ 
-        phone_number: from, 
-        role: 'user', 
-        content: text,
-        message_id: messageId 
-    });
-
+  // A. ANTI-SPAM (Tabla messages)
+  const { error: insertError } = await supabase.from('messages').insert({ 
+    phone_number: from, role: 'user', content: text, message_id: message.id 
+  });
   if (insertError && insertError.code === '23505') return new NextResponse('OK', { status: 200 });
 
-  // B. GESTIÓN DE DATOS DEL CLIENTE (Nombre y Temperatura)
-  const { data: customerData } = await supabase.from('customers').select('full_name').eq('phone_number', from).maybeSingle();
-  const { data: chatData } = await supabase.from('chats').upsert({ phone_number: from }, { onConflict: 'phone_number' }).select().single();
-  
-  let msgCount = (chatData?.total_messages || 0) + 1;
-  await supabase.from('chats').update({ total_messages: msgCount }).eq('phone_number', from);
+  // B. OBTENER NOMBRE DESDE LA DB (Para evitar alucinaciones como 'Juan')
+  const { data: customer } = await supabase.from('customers').select('full_name').eq('phone_number', from).maybeSingle();
+  const nombreReal = customer?.full_name || "Cliente";
 
-  // C. CONSULTA DE DISPONIBILIDAD REAL
+  // C. PREPARACIÓN DE CALENDARIO MASTICADO
   let infoCalendario = "";
-  if (text.toLowerCase().match(/fecha|disponible|cuándo|dia|día|si|mándame|mandame/)) {
-    const eventos = await getAvailableSlots();
-    const hoy = new Date().toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  if (text.toLowerCase().match(/fecha|disponible|cuándo|dia|día|si/)) {
+    const ocupados = await getAvailableSlots();
+    const hoyStr = new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
     
-    infoCalendario = `
-      \n(REGLAS DE AGENDA:
-      - HOY ES: ${hoy}.
-      - HORARIOS FRANCO: Lun-Vie (10:00-15:00), Sáb (09:00-14:00), Dom (16:00-21:00).
-      - BLOQUES OCUPADOS: ${JSON.stringify(eventos.slice(0,15))}.
-      - TAREA: Cruza tus horarios con lo ocupado y da 7 opciones LIBRES REALES. No inventes días.)
-    `;
+    infoCalendario = `\n--- INFO DE AGENDA ---
+    HOY ES: ${hoyStr}.
+    REGLA: La semana empieza el LUNES.
+    DÍAS OCUPADOS (NO sugerir estos): ${ocupados.join(", ")}.
+    TAREA: Sugiere 7 fechas LIBRES reales en tus bloques: Mañana (10-15), Sáb (9-14), Dom (16-21).`;
   }
 
-  // D. CONSULTA DE HISTORIAL (Corto para evitar redundancia)
-  const { data: history } = await supabase
-    .from('messages')
-    .select('role, content')
-    .eq('phone_number', from)
-    .order('created_at', { ascending: true })
-    .limit(5);
-
-  // E. INVOCAR A GROQ (Configuración de Precisión)
-  const contextoLead = `\n(IMPORTANTE: Cliente es ${customerData?.full_name || 'Gustavo'}. Sé concisa, directa y empuja al cierre con el abono de $40.000. ${infoCalendario})`;
-  
+  // D. CONSULTA A GROQ (Foco en una sola cosa y brevedad)
   const completion = await groq.chat.completions.create({
     messages: [
-      { role: "system", content: ALICIA_PROMPT + contextoLead },
-      ...(history || []).map((msg: any) => ({
-        role: msg.role === 'user' ? 'user' : 'assistant',
-        content: msg.content
-      })),
-      { role: "user", content: text }
-    ] as any,
+      { 
+        role: "system", 
+        content: ALICIA_PROMPT + `\nIDENTIDAD: Hablas con ${nombreReal}. Prohibido usar otros nombres.
+        REGLA DE FLUJO: Responde una sola cosa a la vez de forma breve. Si das fechas, que sea un solo bloque.` 
+      },
+      { role: "user", content: text + infoCalendario }
+    ],
     model: "llama-3.3-70b-versatile",
-    temperature: 0, // Cero creatividad para evitar alucinaciones de fechas
-    max_tokens: 350
+    temperature: 0, // Cero creatividad para que no invente fechas
+    max_tokens: 300
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
 
-  // F. ENVÍO FRACCIONADO (Párrafos)
-  const paragraphs = responseText.split(/\n\n+/).filter(p => p.trim().length > 0);
-  for (const p of paragraphs) {
-    await sendToWhatsApp(from, p.trim());
-    await new Promise(resolve => setTimeout(resolve, 3000)); 
-  }
+  // E. ENVÍO ÚNICO (Para que no sea agobiante)
+  await sendToWhatsApp(from, responseText.trim());
 
-  // G. GUARDAR RESPUESTA DE ALICIA
-  await supabase.from('messages').insert({ 
-    phone_number: from, 
-    role: 'assistant', 
-    content: responseText 
-  });
+  // F. GUARDAR RESPUESTA
+  await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
 
   return new NextResponse('OK', { status: 200 });
 }
 
+// ... (Función sendToWhatsApp igual al final)
 // 5. FUNCIÓN AUXILIAR DE ENVÍO (Meta v22.0)
 async function sendToWhatsApp(to: string, text: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
