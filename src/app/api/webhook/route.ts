@@ -6,7 +6,7 @@ import { ALICIA_PROMPT } from './prompt';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-// --- UTILIDADES DE ENVÍO (Llamada directa a Meta) ---
+// --- UTILIDADES DE ENVÍO (Llamada limpia a Meta) ---
 async function sendToWhatsApp(to: string, content: any) {
   const response = await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
@@ -19,13 +19,13 @@ async function sendToWhatsApp(to: string, content: any) {
 
   const result = await response.json();
   
-  // Si Meta responde con error, lo guardamos como un mensaje para que lo veas en la consola
   if (!response.ok) {
-    console.error("DETALLE ERROR META:", result);
+    console.error("ERROR DE META:", result);
+    // Registramos el error en la tabla para que sepas qué pasó
     await supabase.from('messages').insert({ 
       phone_number: to, 
       role: 'system', 
-      content: `❌ ERROR META: ${result.error?.message || 'Revisa configuración'}` 
+      content: `⚠️ ERROR META: ${result.error?.message || 'Revisa configuración'}` 
     });
   }
 }
@@ -34,18 +34,17 @@ async function sendToWhatsApp(to: string, content: any) {
 export async function POST(req: Request) {
   const body = await req.json();
 
-  // 1. LÓGICA DE CONSOLA (Franco/Mari enviando mensajes o disparadores)
+  // A. LÓGICA DE CONSOLA (Franco/Mari enviando)
   if (body.action === 'send_template' || body.action === 'send_message') {
     const { phone_number, content, type, template_id } = body;
+    if (phone_number === 'test_account') return NextResponse.json({ success: true });
+
     let finalContent = content;
     let finalType = type || 'text';
 
     if (body.action === 'send_template') {
       const { data: t } = await supabase.from('templates').select('*').eq('id', template_id).single();
-      if (t) { 
-        finalContent = t.content; 
-        finalType = t.type; 
-      }
+      if (t) { finalContent = t.content; finalType = t.type; }
     }
 
     const payload = finalType === 'audio' 
@@ -54,6 +53,7 @@ export async function POST(req: Request) {
 
     await sendToWhatsApp(phone_number, payload);
     
+    // Guardamos en Supabase
     await supabase.from('messages').insert({ 
       phone_number, 
       role: 'assistant', 
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  // 2. LÓGICA DE CLIENTE (Mensajes entrantes por Webhook)
+  // B. LÓGICA DE CLIENTE (Mensaje entrante)
   const entry = body.entry?.[0]?.changes?.[0]?.value;
   const message = entry?.messages?.[0];
   if (!message) return new NextResponse('OK', { status: 200 });
@@ -73,55 +73,36 @@ export async function POST(req: Request) {
   const text = message.text?.body || "";
   const isImage = message.type === 'image';
 
-  // Guardamos lo que envía el cliente
   await supabase.from('messages').insert({ 
     phone_number: from, 
     role: 'user', 
     content: isImage ? "[IMAGEN]" : text, 
-    message_type: isImage ? 'image' : 'text',
-    media_url: isImage ? message.image.id : null 
+    message_type: isImage ? 'image' : 'text'
   });
 
-  // Filtros de IA y Control Manual
+  // Filtros de IA
   const { data: chat } = await supabase.from('chats').select('*').eq('phone_number', from).maybeSingle();
   if (chat?.is_manual || chat?.ai_enabled === false || (chat?.ai_response_count || 0) >= 1) {
     return new NextResponse('OK', { status: 200 });
   }
 
-  // Lógica Alicia (Noche/Día en Santiago)
+  // Lógica Alicia (Día/Noche)
   const horaSantiago = new Date().getUTCHours() - 3;
-  const esDeNoche = horaSantiago < 9 || horaSantiago >= 20;
-
-  if (esDeNoche) {
-    // RESPUESTA NOCTURNA
+  if (horaSantiago < 9 || horaSantiago >= 20) {
     const { data: n } = await supabase.from('settings').select('value').eq('key', 'alicia_night_prompt').single();
-    const nightText = n?.value || "Hola! Franco está descansando. Deja tus ideas aquí.";
-    
-    await sendToWhatsApp(from, { text: { body: nightText } });
-    await supabase.from('messages').insert({ 
-      phone_number: from, role: 'assistant', content: nightText, message_type: 'text' 
-    });
+    await sendToWhatsApp(from, { text: { body: n?.value || "Alicia aquí. Franco te responderá pronto!" } });
   } else {
-    // SALUDO DE DÍA: Disparo directo del audio/texto "Saludo Inicial"
     const { data: s } = await supabase.from('templates').select('*').eq('label', 'Saludo Inicial').single();
     if (s) {
-      const payload = s.type === 'audio' 
-        ? { type: 'audio', audio: { link: s.content } }
-        : { type: 'text', text: { body: s.content } };
-        
+      const payload = s.type === 'audio' ? { type: 'audio', audio: { link: s.content } } : { type: 'text', text: { body: s.content } };
       await sendToWhatsApp(from, payload);
-      await supabase.from('messages').insert({ 
-        phone_number: from, role: 'assistant', content: s.content, message_type: s.type 
-      });
     }
   }
 
-  // Marcamos que Alicia ya intervino para que se calle
   await supabase.from('chats').update({ ai_response_count: 1 }).eq('phone_number', from);
   return new NextResponse('OK', { status: 200 });
 }
 
-// --- VERIFICACIÓN DE WEBHOOK (GET) ---
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   if (searchParams.get('hub.verify_token') === process.env.WEBHOOK_VERIFY_TOKEN) {

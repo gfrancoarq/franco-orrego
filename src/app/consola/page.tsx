@@ -195,7 +195,7 @@ export default function ConsolaVentas() {
 
       {/* ZOOM IMAGEN */}
       {fullScreenImage && (
-        <div className="fixed inset-0 bg-black/95 z-[300] flex items-center justify-center p-10 cursor-pointer" onClick={() => setFullScreenImage(null)}>
+        <div className="fixed inset-0 bg-black/95 z[300] flex items-center justify-center p-10 cursor-pointer" onClick={() => setFullScreenImage(null)}>
           <img src={fullScreenImage} className="max-w-full max-h-full object-contain shadow-2xl" alt="Zoom"/>
         </div>
       )}
