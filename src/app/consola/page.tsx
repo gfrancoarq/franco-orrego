@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import '../globals.css'; // Si esto falla, prueba con la ruta absoluta:
-// import '@/app/globals.css';
+import '../globals.css';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
