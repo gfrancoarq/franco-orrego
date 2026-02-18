@@ -8,7 +8,7 @@ const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_AN
 
 // --- UTILIDADES DE ENVÍO (Llamada directa a Meta) ---
 async function sendToWhatsApp(to: string, content: any) {
-  await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
+  const response = await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
     headers: { 
       'Authorization': `Bearer ${process.env.META_TOKEN}`, 
@@ -16,6 +16,18 @@ async function sendToWhatsApp(to: string, content: any) {
     },
     body: JSON.stringify({ messaging_product: 'whatsapp', to, ...content }),
   });
+
+  const result = await response.json();
+  
+  if (!response.ok) {
+    console.error("ERROR DE META:", JSON.stringify(result, null, 2));
+    // Guardamos el error en Supabase para que tú lo veas desde la tabla 'messages'
+    await supabase.from('messages').insert({ 
+      phone_number: to, 
+      role: 'system', 
+      content: `⚠️ ERROR WHATSAPP: ${result.error?.message || 'Error desconocido'}` 
+    });
+  }
 }
 
 // --- WEBHOOK PRINCIPAL ---
