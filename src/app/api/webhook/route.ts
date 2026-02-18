@@ -17,7 +17,6 @@ async function sendToWhatsApp(to: string, text: string) {
   });
 }
 
-// Envía audios como notas de voz nativas
 async function sendNativeAudio(to: string, audioUrl: string) {
   await fetch(`https://graph.facebook.com/v22.0/${process.env.META_PHONE_ID}/messages`, {
     method: 'POST',
@@ -31,6 +30,7 @@ async function sendNativeAudio(to: string, audioUrl: string) {
   });
 }
 
+// --- WEBHOOK GET ---
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   if (searchParams.get('hub.mode') === 'subscribe' && searchParams.get('hub.verify_token') === process.env.WEBHOOK_VERIFY_TOKEN) {
@@ -39,10 +39,11 @@ export async function GET(req: Request) {
   return new NextResponse('Forbidden', { status: 403 });
 }
 
+// --- PROCESAMIENTO PRINCIPAL POST ---
 export async function POST(req: Request) {
   const body = await req.json();
 
-  // 1. LÓGICA DE LA CONSOLA (Órdenes de Franco o Mari)
+  // 1. LÓGICA DE LA CONSOLA (Órdenes manuales de Franco o Mari)
   if (body.action === 'send_template') {
     const { phone_number, template_id } = body;
     if (phone_number === 'test_account') return new NextResponse('OK', { status: 200 });
@@ -68,54 +69,76 @@ export async function POST(req: Request) {
   const text = message.text?.body || "";
   const isImage = message.type === 'image';
 
-  // A. Guardado y Control de Estado
+  // A. Guardado inicial
   await supabase.from('messages').insert({ 
     phone_number: from, role: 'user', content: text || "[IMAGEN]", message_id: message.id 
   });
-  
-  const { data: chat } = await supabase.from('chats').select('*').eq('phone_number', from).maybeSingle();
-  
-  // Si el chat está en manual, no hacemos nada más
-  if (chat?.is_manual) return new NextResponse('OK', { status: 200 });
 
-  // B. Memoria
-  const { data: history } = await supabase.from('messages')
-    .select('role, content').eq('phone_number', from).order('created_at', { ascending: false }).limit(6);
-  
-  const cleanHistory = (history || []).reverse();
-  const yaCotizado = cleanHistory.some(m => m.role === 'assistant' && (m.content.includes('$') || m.content.includes('sesión')));
+  // B. REGLAS DE SILENCIO E IA (Interruptores)
+  const { data: chatConfig } = await supabase.from('chats')
+    .select('is_manual, ai_enabled, ai_response_count')
+    .eq('phone_number', from)
+    .maybeSingle();
 
-  // C. Filtro de Interés Real
-  if (yaCotizado && text.toLowerCase().match(/interesa|quiero|hacerlo|agendar|fecha|reserva/)) {
-    await supabase.from('chats').update({ is_manual: true, lead_temperature: 'caliente' }).eq('phone_number', from);
-    await sendToWhatsApp(from, "¡Excelente! Le aviso a Mari para que vea la agenda contigo ahora mismo. 🤘");
+  // Si el chat es manual, o la IA está apagada, o Alicia ya respondió una vez, NO HACEMOS NADA.
+  if (chatConfig?.is_manual || chatConfig?.ai_enabled === false || (chatConfig?.ai_response_count || 0) >= 1) {
     return new NextResponse('OK', { status: 200 });
   }
 
-  // D. Respuesta de Alicia (Solo primer contacto o dudas básicas)
-  let responseText = "";
-  const promptContexto = `\n(COTIZACIÓN ENVIADA: ${yaCotizado ? 'SÍ' : 'NO'})`;
+  // C. SALUDO INTELIGENTE (Día vs Noche en Santiago)
+  const now = new Date();
+  const horaSantiago = now.getUTCHours() - 3; // Ajuste manual para Chile
+  const esDeNoche = horaSantiago < 9 || horaSantiago >= 20;
 
+  if (!esDeNoche) {
+    // HORARIO DÍA: Enviamos el Audio de Bienvenida Maestro (Debes poner el ID real del disparador aquí)
+    // Usamos el ID de tu disparador "Saludo Inicial" que creaste en la consola
+    const { data: welcomeTemplate } = await supabase.from('templates')
+      .select('id')
+      .eq('label', 'Saludo Inicial') // Asegúrate que se llame así en tu consola
+      .single();
+
+    if (welcomeTemplate) {
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/webhook`, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'send_template', phone_number: from, template_id: welcomeTemplate.id })
+      });
+      // Marcamos que ya se dio el primer saludo para apagar la IA
+      await supabase.from('chats').update({ ai_response_count: 1 }).eq('phone_number', from);
+      return new NextResponse('OK', { status: 200 });
+    }
+  } else {
+    // HORARIO NOCHE: Alicia responde por texto y pide los 3 insumos
+    const { data: nightMsg } = await supabase.from('settings').select('value').eq('key', 'alicia_night_prompt').single();
+    await sendToWhatsApp(from, nightMsg?.value || "Hola! Franco está descansando. Deja tu idea, zona y medidas aquí.");
+    await supabase.from('chats').update({ ai_response_count: 1 }).eq('phone_number', from);
+    return new NextResponse('OK', { status: 200 });
+  }
+
+  // D. SI LA IA SIGUE ACTIVA (Dudas básicas como ubicación)
+  // Nota: No analiza imágenes por tu petición.
+  if (isImage) return new NextResponse('OK', { status: 200 });
+
+  let responseText = "";
   try {
-    if (isImage) throw new Error("VISION");
     const completion = await groq.chat.completions.create({
-      messages: [{ role: "system", content: ALICIA_PROMPT + promptContexto }, ...cleanHistory.map(m => ({ role: m.role, content: m.content }))],
+      messages: [{ role: "system", content: ALICIA_PROMPT }, { role: "user", content: text }],
       model: "llama-3.3-70b-versatile",
       temperature: 0,
       max_tokens: 150
     });
     responseText = completion.choices[0]?.message?.content || "";
   } catch (e) {
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([ALICIA_PROMPT + promptContexto, ...cleanHistory.map(m => m.content), text]);
-    responseText = result.response.text();
+    responseText = "Consultaré con Franco y te aviso pronto. 🤘";
   }
 
-  // E. Delay de Primer Contacto (20 segundos para no parecer bot instantáneo)
+  // E. Envío de respuesta de IA (Delay de 20 segundos)
   await new Promise(res => setTimeout(res, 20000)); 
   await sendToWhatsApp(from, responseText.trim());
+  
+  // Guardamos respuesta y actualizamos contador para que la IA se apague
   await supabase.from('messages').insert({ phone_number: from, role: 'assistant', content: responseText });
+  await supabase.from('chats').update({ ai_response_count: (chatConfig?.ai_response_count || 0) + 1 }).eq('phone_number', from);
 
   return new NextResponse('OK', { status: 200 });
 }
