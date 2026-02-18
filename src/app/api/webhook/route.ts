@@ -19,13 +19,13 @@ async function sendToWhatsApp(to: string, content: any) {
 
   const result = await response.json();
   
+  // Si Meta responde con error, lo guardamos como un mensaje para que lo veas en la consola
   if (!response.ok) {
-    console.error("ERROR DE META:", JSON.stringify(result, null, 2));
-    // Guardamos el error en Supabase para que tú lo veas desde la tabla 'messages'
+    console.error("DETALLE ERROR META:", result);
     await supabase.from('messages').insert({ 
       phone_number: to, 
       role: 'system', 
-      content: `⚠️ ERROR WHATSAPP: ${result.error?.message || 'Error desconocido'}` 
+      content: `❌ ERROR META: ${result.error?.message || 'Revisa configuración'}` 
     });
   }
 }
