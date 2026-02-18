@@ -67,14 +67,39 @@ export default function ConsolaVentas() {
     }
   };
 
-  const handleManualSend = async () => {
-    if (!inputText || !selectedChat) return;
+const handleManualSend = async () => {
+  if (!inputText || !selectedChat) return;
+
+  // 1. CREAMOS EL MENSAJE "FANTASMA" (Aparece de inmediato)
+  const tempMsg = {
+    role: 'assistant',
+    content: inputText,
+    created_at: new Date().toISOString(),
+    message_type: 'text'
+  };
+  
+  // Lo inyectamos al estado para que lo veas al instante
+  setMessages([...messages, tempMsg]);
+  const textToSend = inputText;
+  setInputText(""); // Limpiamos el input rápido
+
+  // 2. HACEMOS EL ENVÍO REAL POR DETRÁS
+  try {
     await fetch('/api/webhook', {
       method: 'POST',
-      body: JSON.stringify({ action: 'send_message', phone_number: selectedChat.phone_number, content: inputText, type: 'text' })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        action: 'send_message', 
+        phone_number: selectedChat.phone_number, 
+        content: textToSend, 
+        type: 'text' 
+      })
     });
-    setInputText("");
-  };
+  } catch (err) {
+    console.error("Error al enviar:", err);
+    alert("No se pudo enviar el mensaje, revisa tu conexión.");
+  }
+};
 
   if (!supabase) return <div className="p-20 text-white bg-black h-screen text-center font-black uppercase">Faltan Variables de Entorno en Vercel</div>;
 
