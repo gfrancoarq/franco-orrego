@@ -1,14 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #2563eb;
+  --color-brand-pink: #db2777;
+}
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: white;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
+
+/* Forzar visibilidad de textos en la consola */
+.text-white { color: #ffffff !important; }
+.text-gray-500 { color: #a1a1aa !important; }
+.bg-blue-600 { background-color: #2563eb !important; }

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import '../globals.css';
 
@@ -10,12 +10,7 @@ export default function ConsolaVentas() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [templates, setTemplates] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [newTemplate, setNewTemplate] = useState({ label: '', type: 'text', content: '' });
-  const [pendingSend, setPendingSend] = useState(null);
-  const timerRef = useRef(null);
 
-  // CARGA INICIAL DE CHATS Y BOTONES
   useEffect(() => {
     const fetchData = async () => {
       const { data: c } = await supabase.from('chats').select('*').order('is_pinned', { ascending: false });
@@ -26,142 +21,75 @@ export default function ConsolaVentas() {
     fetchData();
   }, []);
 
-  // CARGA DE MENSAJES AL SELECCIONAR CLIENTE
   useEffect(() => {
     if (!selectedChat) return;
     const fetchMsgs = async () => {
-      const { data } = await supabase.from('messages')
-        .select('*')
-        .eq('phone_number', selectedChat.phone_number)
-        .order('created_at', { ascending: true });
+      const { data } = await supabase.from('messages').select('*').eq('phone_number', selectedChat.phone_number).order('created_at', { ascending: true });
       setMessages(data || []);
     };
     fetchMsgs();
-    
-    // Escuchar mensajes nuevos en tiempo real
-    const channel = supabase.channel('realtime-msgs')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => fetchMsgs())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
   }, [selectedChat]);
 
-  const executeSend = async (template) => {
-    setPendingSend(null);
-    const res = await fetch('/api/webhook', {
-      method: 'POST',
-      body: JSON.stringify({ action: 'send_template', phone_number: selectedChat.phone_number, template_id: template.id })
-    });
-    if (res.ok) alert("Mensaje enviado a WhatsApp");
-  };
-
-  const triggerSend = (template) => {
-    if (!selectedChat) return;
-    setPendingSend(template);
-    timerRef.current = setTimeout(() => executeSend(template), 10000);
-  };
-
   return (
-    <div className="flex h-screen bg-black text-white font-sans">
+    <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
       
-      {/* LATERAL: LISTA DE CLIENTES */}
-      <div className="w-80 border-r border-gray-800 flex flex-col bg-[#0a0a0a]">
-        <div className="p-6 border-b border-gray-800">
-          <h1 className="text-xl font-black tracking-tighter italic text-blue-500">FRANCO ORREGO</h1>
-          <p className="text-[10px] text-gray-500 font-bold uppercase">Consola de Control</p>
+      {/* LATERAL IZQUIERDO */}
+      <div className="w-72 border-r border-zinc-800 flex flex-col bg-[#0a0a0a]">
+        <div className="p-6 border-b border-zinc-800">
+          <h1 className="text-xl font-black italic text-white">FRANCO ORREGO</h1>
+          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Console v2.9</p>
         </div>
         <div className="flex-1 overflow-y-auto">
           {chats.map(chat => (
             <div 
               key={chat.id} 
               onClick={() => setSelectedChat(chat)}
-              className={`p-4 border-b border-gray-900 cursor-pointer hover:bg-white/5 ${selectedChat?.id === chat.id ? 'bg-blue-600/10 border-l-4 border-l-blue-600' : ''}`}
+              className={`p-4 border-b border-zinc-900 cursor-pointer hover:bg-zinc-800 ${selectedChat?.id === chat.id ? 'bg-zinc-800 border-l-4 border-l-blue-600' : ''}`}
             >
-              <p className="font-bold text-sm">{chat.phone_number === 'test_account' ? '🛠 CHAT DE TEST' : chat.phone_number}</p>
-              <span className="text-[9px] font-black text-gray-500 uppercase">{chat.lead_temperature}</span>
+              <p className="font-bold text-sm text-white">{chat.phone_number === 'test_account' ? '🛠 CHAT DE TEST' : chat.phone_number}</p>
+              <span className="text-[9px] font-black text-zinc-500 uppercase">{chat.lead_temperature}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ÁREA CENTRAL: CHAT Y DISPARADORES */}
-      <div className="flex-1 flex flex-col bg-[#050505]">
-        
+      {/* ÁREA CENTRAL */}
+      <div className="flex-1 flex flex-col bg-black">
         {/* HEADER */}
-        <div className="h-16 border-b border-gray-800 flex items-center px-8 justify-between bg-[#0a0a0a]">
-          <span className="font-black text-sm uppercase tracking-widest text-gray-400">
-            {selectedChat ? selectedChat.phone_number : "Selecciona un chat"}
+        <div className="h-16 border-b border-zinc-800 flex items-center px-8 bg-[#0a0a0a]">
+          <span className="font-bold text-sm text-zinc-400">
+            {selectedChat ? `CLIENTE: ${selectedChat.phone_number}` : "SELECCIONA UN CHAT"}
           </span>
-          {pendingSend && (
-            <div className="bg-red-600 px-4 py-1 rounded text-[10px] font-black animate-pulse flex items-center gap-4">
-              ENVIANDO {pendingSend.label}... 
-              <button onClick={() => { clearTimeout(timerRef.current); setPendingSend(null); }} className="bg-white text-red-600 px-2 rounded">CANCELAR</button>
-            </div>
-          )}
         </div>
 
-        {/* MENSAJES */}
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+        {/* MENSAJES (Burbujas claras sobre fondo oscuro) */}
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 bg-[#050505]">
+          {messages.length === 0 && <p className="text-zinc-600 text-center mt-10 text-xs">No hay mensajes en este chat.</p>}
           {messages.map((m, i) => (
-            <div key={i} className={`max-w-[70%] p-3 rounded-xl text-xs ${m.role === 'user' ? 'bg-gray-900 self-start' : 'bg-blue-600 self-end'}`}>
+            <div key={i} className={`max-w-[75%] p-3 rounded-2xl text-sm ${m.role === 'user' ? 'bg-zinc-800 text-white self-start' : 'bg-blue-600 text-white self-end font-bold'}`}>
               {m.content}
             </div>
           ))}
         </div>
 
-        {/* PANEL DE BOTONES */}
-        <div className="p-4 bg-[#0a0a0a] border-t border-gray-800">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest">Disparadores de Campaña</span>
-            <button onClick={() => setShowModal(true)} className="text-[9px] bg-white text-black px-3 py-1 rounded-full font-black hover:bg-blue-500 hover:text-white transition-colors">
-              + NUEVO BOTÓN
-            </button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+        {/* DISPARADORES */}
+        <div className="p-6 bg-[#0a0a0a] border-t border-zinc-800">
+          <p className="text-[10px] font-black text-zinc-600 uppercase mb-4 tracking-widest">Disparadores de Campaña</p>
+          <div className="flex flex-wrap gap-2">
             {templates.map(t => (
               <button 
                 key={t.id} 
-                onClick={() => triggerSend(t)}
-                className={`p-3 rounded-lg border border-gray-800 text-[10px] font-black uppercase transition-all ${selectedChat ? 'bg-[#111] hover:border-blue-600 hover:text-blue-500' : 'opacity-20 cursor-not-allowed'}`}
+                className="bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-xl text-xs font-bold text-white hover:border-blue-500 hover:text-blue-500 transition-all"
               >
                 {t.type === 'audio' ? '🔊' : '💬'} {t.label}
               </button>
             ))}
+            <button className="border-2 border-dashed border-zinc-800 px-4 py-2 rounded-xl text-zinc-600 text-xs font-bold">
+              + NUEVO
+            </button>
           </div>
         </div>
       </div>
-
-      {/* MODAL CREAR BOTÓN */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
-          <div className="bg-[#0a0a0a] p-8 rounded-2xl w-full max-w-sm border border-gray-800">
-            <h2 className="text-xl font-black italic mb-6">NUEVO BOTÓN</h2>
-            <input 
-              type="text" 
-              placeholder="NOMBRE" 
-              className="w-full p-3 bg-white/5 border border-gray-800 rounded mb-4 text-xs font-bold outline-none"
-              onChange={(e) => setNewTemplate({...newTemplate, label: e.target.value})}
-            />
-            <textarea 
-              placeholder="CONTENIDO" 
-              className="w-full p-3 bg-white/5 border border-gray-800 rounded mb-6 text-xs font-bold h-24 outline-none"
-              onChange={(e) => setNewTemplate({...newTemplate, content: e.target.value})}
-            />
-            <div className="flex gap-2">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 font-bold text-gray-500 text-xs">CANCELAR</button>
-              <button 
-                onClick={async () => {
-                  await supabase.from('templates').insert([newTemplate]);
-                  setShowModal(false);
-                  window.location.reload();
-                }}
-                className="flex-1 py-3 bg-blue-600 text-white font-black text-xs rounded shadow-lg shadow-blue-900/50"
-              >
-                GUARDAR
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
