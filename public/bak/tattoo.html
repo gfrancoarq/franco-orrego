@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blackwork a gran escala en Santiago. Proyectos exclusivos para coleccionistas serios.">
+    <title>Blackwork | Franco Orrego Tattoo Studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SISTEMA DE DISEÑO --- */
+        :root {
+            --color-primario: #00D4FF;
+            --color-primario-oscuro: #008CB3;
+            
+            --color-fondo: #050506; 
+            --color-fondo-sec: #0F0F11;
+            --color-borde: #2A2A30;
+            
+            --color-titulo: #FFFFFF;
+            --color-texto: #C0C0C4;
+            --color-texto-sec: #8A8A8E;
+            
+            --sombra-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0077FF 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* --- TEXTURA ROCKERA (NOISE) --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 0;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0; 
+        }
+
+        /* --- TIPOGRAFÍA --- */
+        h1, h2, h3, h4 {
+            color: var(--color-titulo);
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+            text-align: center; /* Global center alignment */
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .highlight {
+            color: var(--color-primario);
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 6, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .header-bar.scrolled {
+            padding: 0.8rem 2rem;
+            background: rgba(5, 5, 6, 0.98);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        /* LOGO CORREGIDO: Igual al Home, sin borde */
+        .logo-icon {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--color-primario);
+            letter-spacing: -1px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        .header-cta {
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid var(--color-borde);
+            border-radius: 0; 
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            border-color: var(--color-primario);
+            color: var(--color-primario);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* --- BOTONES --- */
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 16px 32px;
+            border-radius: 0;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-primary {
+            background: white;
+            color: black;
+            border: 1px solid white;
+        }
+
+        .cta-primary:hover {
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5); 
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--color-borde);
+        }
+
+        .cta-secondary:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(5,5,6,0.4) 0%, rgba(5,5,6,1) 100%),
+                        url('assets/blackwork-hero.jpg') center/cover no-repeat;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(transparent 50%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #dcdcdc;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- PROCESO --- */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .step {
+            text-align: left;
+            padding: 2.5rem 2rem;
+            background: rgba(20, 20, 22, 0.6); 
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step:hover {
+            border-color: var(--color-primario);
+            transform: translateY(-5px);
+            background: rgba(20, 20, 22, 0.9);
+        }
+
+        .step-number {
+            font-size: 4rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.05); 
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            line-height: 1;
+            font-family: 'Impact', sans-serif;
+        }
+
+        .step h3 {
+            color: var(--color-primario);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .step p {
+            font-size: 0.95rem;
+            color: var(--color-texto-sec);
+        }
+
+        /* --- GALERÍA GRID --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1px; 
+            margin-top: 3rem;
+            background: var(--color-borde);
+            border: 1px solid var(--color-borde);
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: var(--color-fondo-sec);
+            cursor: pointer;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: grayscale(40%) contrast(110%);
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.05);
+            filter: grayscale(0%) contrast(100%);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            letter-spacing: 1px;
+            color: white;
+        }
+
+        .gallery-overlay p {
+            color: var(--color-primario);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 6, 0.98);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 95%;
+            max-height: 95%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border: 1px solid var(--color-borde);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            color: var(--color-primario);
+        }
+
+        .lightbox-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-nav button:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
+        .lightbox-prev { left: -60px; }
+        .lightbox-next { right: -60px; }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- DIRECTOR SECTION --- */
+        .director-section {
+            background: var(--color-fondo-sec);
+            border-top: 1px solid var(--color-borde);
+            border-bottom: 1px solid var(--color-borde);
+            position: relative;
+        }
+
+        .director-container {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Alineación a la izquierda específica para la sección director */
+        .director-container h2 {
+            text-align: left;
+        }
+
+        .director-photo {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0; 
+            filter: grayscale(100%) contrast(120%);
+            transition: filter 0.3s ease;
+            border: 1px solid var(--color-borde);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.5); 
+        }
+        
+        .director-photo:hover {
+            filter: grayscale(0%) contrast(100%);
+        }
+
+        .badges-row {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .cert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primario);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- CTA FINAL --- */
+        .cta-final {
+            text-align: center;
+            padding: 8rem 0;
+            background: linear-gradient(to top, #000 0%, var(--color-fondo) 100%);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            background: #000;
+            color: var(--color-texto-sec);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .director-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            /* En móvil lo centramos para que se vea ordenado */
+            .director-container h2 {
+                text-align: center;
+            }
+            
+            .director-photo {
+                margin: 0 auto;
+            }
+            
+            .badges-row {
+                justify-content: center;
+            }
+
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+            .lightbox-close { top: 20px; right: 20px; }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-bar">
+        <a href="/" class="logo">
+            <div class="logo-icon">FO</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+        <a href="https://wa.me/56948713122?text=Hola,%20quiero%20iniciar%20mi%20proyecto%20de%20blackwork" target="_blank" rel="noopener noreferrer" class="header-cta">Cotizar</a>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <h1>Tatuaje de Autor <br><span class="highlight">Blackwork</span></h1>
+            <p class="hero-subtitle">Estudio privado. Proyectos para quienes entienden que un tatuaje no es un gasto, sino una inversión en identidad.</p>
+            
+            <div class="cta-group">
+                <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                    Cotizar al DM
+                </a>
+                <a href="#gallery" class="cta-button cta-secondary">Ver Proyectos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESO -->
+    <main>
+        <section id="process">
+            <div class="container">
+                <h2 class="animate-in">Método de Trabajo</h2>
+                <p style="text-align: center; color: var(--color-texto-sec); max-width: 600px; margin: 0 auto 3rem;">Sin improvisaciones. Un proceso técnico estructurado.</p>
+                
+                <div class="process-steps animate-in">
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <h3>Contacto</h3>
+                        <p>Envía tu idea por DM de Instagram indicando tamaño aproximado y zona del cuerpo. Sé breve y directo.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <h3>Reserva</h3>
+                        <p>Abono de reserva para bloquear tu fecha en la agenda y comenzar el proceso de diseño digital.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <h3>Diseño</h3>
+                        <p>Propuesta personalizada. Ajustes técnicos para asegurar longevidad en la piel.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">04</div>
+                        <h3>Sesión</h3>
+                        <p>Día del tatuaje. Ambiente estéril, equipo de alta gama y ejecución profesional.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERÍA (Paths intactos) -->
+        <section id="gallery">
+            <div class="container">
+                <h2 class="animate-in">Selección de Obras</h2>
+                <p style="text-align: center; color: var(--color-texto-sec); margin-bottom: 3rem; font-size: 0.9rem;">HAZ CLIC PARA AMPLIAR</p>
+                
+                <div class="gallery-grid animate-in">
+                    <!-- Images List -->
+                    <div class="gallery-item" data-caption="Ornamental | Espalda">
+                        <img src="assets/IMG_2064.png" alt="Ornamental Espalda" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Ornamental</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Heterogéneo | Manga completa">
+                        <img src="assets/IMG_2176.png" alt="Heterogéneo Manga" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Heterogéneo</h4>
+                            <p>Manga completa</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Cobertura | Espalda">
+                        <img src="assets/IMG_3282.png" alt="Cobertura Espalda" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Cobertura</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Felino | Espalda alta">
+                        <img src="assets/IMG_3626.png" alt="Felino Espalda" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Felino</h4>
+                            <p>Espalda alta</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dragones | Espalda">
+                        <img src="assets/IMG_1511.png" alt="Dragones Espalda" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Dragones</h4>
+                            <p>Espalda</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dragón | Pecho y brazo">
+                        <img src="assets/IMG_3104.png" alt="Dragón Pecho" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Dragón</h4>
+                            <p>Pecho y brazo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Heterogéneo | Manga cara externa">
+                        <img src="assets/IMG_3951.png" alt="Heterogéneo Manga" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Heterogéneo</h4>
+                            <p>Manga cara externa</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Dioses griegos | Espalda en proceso">
+                        <img src="assets/IMG_3402.png" alt="Dioses griegos Espalda" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Dioses Griegos</h4>
+                            <p>Espalda en proceso</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item" data-caption="Ave y flores | Muslo cadera">
+                        <img src="assets/IMG_1716.png" alt="Ave y flores Muslo" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <h4>Ave y flores</h4>
+                            <p>Muslo cadera</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIGHTBOX -->
+        <div id="lightbox" class="lightbox">
+            <div class="lightbox-content">
+                <span class="lightbox-close">&times;</span>
+                <img class="lightbox-image" src="" alt="">
+                <div class="lightbox-caption"></div>
+                <div class="lightbox-nav">
+                    <button class="lightbox-prev">&lsaquo;</button>
+                    <button class="lightbox-next">&rsaquo;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIRECTOR / ARTISTA (Actualizado Nombre y Texto) -->
+        <section id="director" class="director-section">
+            <div class="container">
+                <div class="director-container animate-in">
+                    <div>
+                        <img src="assets/4fotofranco.png" alt="Franco - Artista Residente" class="director-photo" loading="lazy">
+                    </div>
+                    <div>
+                        <h2>Franco</h2>
+                        <h3 style="color: var(--color-texto-sec); font-size: 1rem; margin-top: -10px;">Artista Residente & Arquitecto</h3>
+                        
+                        <div class="badges-row">
+                            <span class="cert-badge">Asepsia Certificada</span>
+                            <span class="cert-badge">Blackwork Specialist</span>
+                            <span class="cert-badge">5+ Años Exp.</span>
+                        </div>
+                        
+                        <p>Mi enfoque profesional fusiona la estética y el equilibrio visual con la fluidez del arte corporal. Trabajo con una técnica firme pero suave, cuidando la profundidad justa para asegurar una curación impecable y líneas finas perfectas. Entiendo que las piezas increíbles se construyen desde lo minucioso: es la precisión en cada pequeño detalle lo que da vida a los grandes proyectos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="cta-final">
+            <div class="container">
+                <h2 class="animate-in">Agenda Abierta</h2>
+                <p class="animate-in" style="color: var(--color-texto-sec); margin-bottom: 2rem;">Cupos limitados por mes para garantizar calidad en cada pieza.</p>
+                
+                <div class="cta-group animate-in">
+                    <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+                        Agendar Cita
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/tyc.html">Términos</a>
+        </div>
+        <p style="opacity: 0.5;">© 2025 Franco Orrego Tattoo Studio</p>
+        <p style="opacity: 0.5; margin-top: 5px;">Av. Portugal 1322, Santiago</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // LIGHTBOX LOGIC
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.querySelector('.lightbox-image');
+            const lightboxCaption = document.querySelector('.lightbox-caption');
+            const lightboxClose = document.querySelector('.lightbox-close');
+            const lightboxPrev = document.querySelector('.lightbox-prev');
+            const lightboxNext = document.querySelector('.lightbox-next');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            let currentIndex = 0;
+
+            galleryItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateLightbox();
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            const closeLightbox = () => {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            const showPrev = () => {
+                currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+                updateLightbox();
+            };
+
+            const showNext = () => {
+                currentIndex = (currentIndex + 1) % galleryItems.length;
+                updateLightbox();
+            };
+
+            lightboxPrev.addEventListener('click', showPrev);
+            lightboxNext.addEventListener('click', showNext);
+
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') showPrev();
+                if (e.key === 'ArrowRight') showNext();
+            });
+
+            function updateLightbox() {
+                const item = galleryItems[currentIndex];
+                const img = item.querySelector('.gallery-image');
+                const caption = item.dataset.caption;
+                
+                lightboxImage.src = img.src;
+                lightboxImage.alt = img.alt;
+                lightboxCaption.textContent = caption;
+            }
+
+            // Animaciones Scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

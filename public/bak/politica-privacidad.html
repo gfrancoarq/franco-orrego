@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Política de privacidad de Franco Orrego Tattoo Studio. Cómo protegemos tus datos.">
+    
+    <title>Política de Privacidad | Franco Orrego Tattoo Studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-primario: #00D4FF;
+            --color-exito: #06D6A0;
+            --color-alerta: #FF6B6B;
+            --color-fondo: #0A0A0B;
+            --color-fondo-sec: #121214;
+            --color-borde: #252529;
+            --color-titulo: #FFFFFF;
+            --color-texto: #E5E5E7;
+            --color-texto-sec: #A0A0A3;
+            --sombra-lg: 0 20px 25px -5px rgba(0, 212, 255, 0.1);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0099FF 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .header-bar.scrolled {
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 50px;
+            background: var(--gradiente);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        /* --- CONTENT --- */
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--color-titulo);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .last-updated {
+            color: var(--color-texto-sec);
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section h2 {
+            color: var(--color-titulo);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .section h3 {
+            color: var(--color-primario);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem;
+            font-weight: 600;
+        }
+
+        .section p, .section li {
+            color: var(--color-texto-sec);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .section ul, .section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid var(--color-primario);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-box {
+            background: var(--color-fondo-sec);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .contact-box p {
+            margin-bottom: 1rem;
+        }
+
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-exito);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .whatsapp-link:hover {
+            color: var(--color-primario);
+        }
+
+        .whatsapp-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--color-fondo-sec);
+            text-align: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--color-borde);
+            color: var(--color-texto-sec);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primario);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            margin: 0.25rem 0;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 60px 0;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .section h2 {
+                font-size: 1.25rem;
+            }
+
+            .footer-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-bar">
+        <a href="/" class="logo">
+            <div class="logo-icon">FOTS</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="container">
+        <h1 class="page-title animate-in">Política de Privacidad</h1>
+        
+        <div class="last-updated animate-in">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            Última actualización: 19 de noviembre de 2025
+        </div>
+
+        <section class="section animate-in">
+            <h2>1. Introducción</h2>
+            <p>En Franco Orrego Tattoo Studio, comprometidos con la protección de tus datos personales, operamos bajo los más altos estándares de seguridad y privacidad establecidos por la Ley Chilena de Protección de Datos Personales (Ley 19.628).</p>
+            <p>Esta política describe cómo recopilamos, utilizamos, almacenamos y protegemos tu información cuando interactúas con nuestro sitio web, canales de comunicación y servicios presenciales.</p>
+        </section>
+
+        <section class="section animate-in">
+            <h2>2. Datos que Recopilamos</h2>
+            
+            <h3>2.1 Información que tú proporcionas:</h3>
+            <ul>
+                <li><strong>Datos de contacto:</strong> Nombre, teléfono, email, Instagram</li>
+                <li><strong>Información médica relevante:</strong> Alergias, condiciones de piel, antecedentes (solo para tatuajes/borrado)</li>
+                <li><strong>Fotografías:</strong> Referencias de tatuajes, estado de la piel, resultados de tratamientos</li>
+                <li><strong>Datos de pago:</strong> Comprobantes de transferencia (no almacenamos datos de tarjetas)</li>
+            </ul>
+
+            <h3>2.2 Información automática:</h3>
+            <ul>
+                <li>Dirección IP, navegador, dispositivo (mediante cookies)</li>
+                <li>Interacción con nuestro contenido (clics, tiempo en página)</li>
+            </ul>
+        </section>
+
+        <section class="section animate-in">
+            <h2>3. Cómo Usamos Tu Información</h2>
+            <div class="highlight-box">
+                <p><strong>Principio de finalidad:</strong> Tus datos se usan EXCLUSIVAMENTE para:</p>
+            </div>
+            <ul>
+                <li>Coordinar citas y enviar recordatorios</li>
+                <li>Diseñar tu tatuaje personalizado</li>
+                <li>Evaluar tu caso para borrado láser</li>
+                <li>Procesar pagos y enviar comprobantes</li>
+                <li>Enviar información relevante sobre tu sesión</li>
+                <li>Mostrar resultados de tratamientos (con tu consentimiento explícito)</li>
+            </ul>
+            <p><strong>NUNCA</strong> vendemos ni compartimos tus datos con terceros para marketing.</p>
+        </section>
+
+        <section class="section animate-in">
+            <h2>4. Protección y Seguridad</h2>
+            <p>Implementamos medidas de seguridad técnicas y organizativas:</p>
+            <ul>
+                <li>Almacenamiento en servidores seguros con cifrado SSL</li>
+                <li>Acceso restringido solo a personal autorizado</li>
+                <li>Contraseñas fuertes y autenticación de dos factores</li>
+                <li>Backups cifrados cada 24 horas</li>
+            </ul>
+            <p>Tus fotografías están protegidas con marca de agua digital y nunca se usan sin consentimiento escrito.</p>
+        </section>
+
+        <section class="section animate-in">
+            <h2>5. Tus Derechos</h2>
+            <p>Como titular de datos, puedes ejercer estos derechos GRATUITAMENTE:</p>
+            
+            <h3>5.1 Derecho de Acceso:</h3>
+            <p>Solicitar una copia completa de todos tus datos en nuestro poder.</p>
+
+            <h3>5.2 Derecho de Rectificación:</h3>
+            <p>Corregir cualquier información inexacta o incompleta.</p>
+
+            <h3>5.3 Derecho de Eliminación:</h3>
+            <p>Solicitar borrar todos tus datos (salvo información legalmente retenida).</p>
+
+            <h3>5.4 Derecho de Portabilidad:</h3>
+            <p>Recibir tus datos en formato digital para transferirlos a otro prestador.</p>
+
+            <h3>5.5 Derecho a Oponerte:</h3>
+            <p>Dejar de recibir comunicaciones sin perder el servicio contratado.</p>
+
+            <div class="contact-box">
+                <p>Para ejercer tus derechos, contáctanos:</p>
+                <a href="https://wa.me/56948713122?text=Hola%20quiero%20ejercer%20un%20derecho%20de%20mis%20datos" class="whatsapp-link">
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.198.297-.768.967-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    +56 9 4871 3122 (WhatsApp directo)
+                </a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Responderemos en menos de 24 horas hábiles.</p>
+            </div>
+        </section>
+
+        <section class="section animate-in">
+            <h2>6. Cookies y Tecnologías de Seguimiento</h2>
+            <p>Usamos cookies estrictamente necesarias para:</p>
+            <ul>
+                <li>Mantener tu sesión de navegación segura</li>
+                <li>Recordar preferencias de visualización</li>
+                <li>Analizar tráfico anónimo para mejorar el sitio</li>
+            </ul>
+            <p><strong>No usamos</strong> cookies de publicidad ni compartimos datos con Google/Facebook para remarketing.</p>
+            <p>Puedes desactivar cookies en tu navegador, pero algunas funciones del sitio podrían no funcionar correctamente.</p>
+        </section>
+
+        <section class="section animate-in">
+            <h2>7. Retención de Datos</h2>
+            <p>Conservamos tu información solo el tiempo necesario:</p>
+            <ul>
+                <li><strong>Datos de contacto</strong>: Hasta que solicites eliminación o pasen 5 años sin actividad</li>
+                <li><strong>Fotos de tratamientos</strong>: Máximo 3 años (salvo consentimiento renovado)</li>
+                <li><strong>Comprobantes de pago</strong>: 7 años (requerimiento legal tributario)</li>
+                <li><strong>Historial clínico</strong>: 10 años (normativa sanitaria)</li>
+            </ul>
+        </section>
+
+        <section class="section animate-in">
+            <h2>8. Cambios en esta Política</h2>
+            <p>Actualizamos esta política cada vez que hay un cambio significativo en nuestros procesos o en la legislación aplicable.</p>
+            <p>Te notificaremos por email (si nos has proporcionado uno) o mediante banner en el sitio web 30 días antes de cambios importantes.</p>
+            <p>El uso continuo de nuestros servicios después de los cambios implica tu aceptación de la nueva política.</p>
+        </section>
+
+        <section class="section animate-in">
+            <h2>9. Contacto del Responsable</h2>
+            <div class="contact-box">
+                <p><strong>Responsable del Tratamiento:</strong></p>
+                <p>Gustavo Franco</p>
+                <p>RUT: 15.987.049-9</p>
+                <p>Estudio: Av. Portugal 1322, Santiago</p>
+                
+                <p style="margin-top: 1.5rem;"><strong>Contacto directo:</strong></p>
+                <a href="https://wa.me/56948713122?text=Hola%20quiero%20consultar%20sobre%20la%20política%20de%20privacidad" class="whatsapp-link">
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.198.297-.768.967-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    +56 9 4871 3122
+                </a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Responderemos en 24h hábiles</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/tyc.html">Términos y Condiciones</a>
+            <a href="/politica-privacidad.html" class="active">Política de Privacidad</a>
+            <a href="/tattoo.html">Tatuajes</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/sistema-3k.html">Sistema 3K</a>
+        </div>
+        <p>© 2025 Franco Orrego Tattoo Studio · Todos los derechos reservados</p>
+        <p>Av. Portugal 1322, Santiago · Metro Irarrázaval</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Animaciones
+            const observerOptions = {
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Franco Orrego Tattoo Studio - Arte en la piel y tecnología de borrado láser en Santiago.">
+    
+    <title>Franco Orrego | Tattoo Studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- SISTEMA DE DISEÑO --- */
+        :root {
+            /* Paleta ajustada para más contraste y seriedad */
+            --color-primario: #00D4FF;
+            --color-primario-oscuro: #008CB3;
+            --color-acento: #FFFFFF;
+            
+            --color-fondo: #050506; /* Más oscuro para vibe Rock/Night */
+            --color-fondo-sec: #0F0F11;
+            --color-borde: #2A2A30;
+            
+            --color-titulo: #FFFFFF;
+            --color-texto: #C0C0C4;
+            --color-texto-sec: #8A8A8E;
+            
+            --sombra-lg: 0 25px 50px -12px rgba(0, 212, 255, 0.15);
+            --gradiente: linear-gradient(135deg, var(--color-primario) 0%, #0077FF 100%);
+            /* Gradiente sutil para fondos */
+            --gradiente-oscuro: radial-gradient(circle at center, rgba(30,30,35,1) 0%, rgba(5,5,6,1) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 0;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0; /* Inicio invisible para JS */
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 6, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--color-texto);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--color-primario);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--color-primario);
+            letter-spacing: -1px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            display: block;
+            color: var(--color-texto-sec);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        /* --- TIPOGRAFÍA ESTILO ROCK/POSTER --- */
+        h1, h2, h3 {
+            color: var(--color-titulo);
+            line-height: 1.1;
+            text-transform: uppercase; /* Clave para el estilo Rock */
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 7vw, 5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+        }
+
+        /* Efecto de texto con imagen o gradiente */
+        .gradient-text {
+            background: linear-gradient(to right, #fff, #999);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .highlight {
+            color: var(--color-primario);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 90vh; /* Un poco menos alto para pantallas de laptop */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: var(--color-fondo);
+            /* Fondo sutil tipo "spotlight" */
+            background-image: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-texto-sec);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+
+        /* --- BOTONES --- */
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            border-radius: 4px; /* Bordes más cuadrados para estilo más rudo */
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .cta-primary {
+            background: var(--color-titulo);
+            color: black;
+            border: 1px solid white;
+        }
+
+        .cta-primary:hover {
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            color: black;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--color-borde);
+        }
+
+        .cta-secondary:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+        }
+
+        /* --- SERVICIOS GRID (AHORA 2 COLUMNAS) --- */
+        .services-hub {
+            display: grid;
+            /* Máximo 450px para que se vean robustas */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 450px)); 
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            background: var(--color-fondo-sec);
+            border: 1px solid var(--color-borde);
+            padding: 3.5rem 2.5rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alineación izquierda para estilo editorial */
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        /* Borde superior de acento */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-primario), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            background: #161618;
+            border-color: #333;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primario);
+        }
+
+        .service-card p {
+            color: var(--color-texto-sec);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .service-link {
+            margin-top: auto;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .service-link::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-link::after {
+            transform: translateX(5px);
+        }
+
+        /* Tags visuales */
+        .tag-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .mini-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-texto-sec);
+            border: 1px solid var(--color-borde);
+            padding: 4px 8px;
+            border-radius: 2px;
+        }
+
+        /* --- STATS --- */
+        .stats-section {
+            border-top: 1px solid var(--color-borde);
+            border-bottom: 1px solid var(--color-borde);
+            background: #080809;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Forzar 3 columnas */
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white; /* Blanco puro para más impacto */
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--color-primario);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            background: var(--color-fondo);
+            color: var(--color-texto-sec);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            transition: transform 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: scale(1.1);
+        }
+
+        .social-links svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--color-texto);
+            transition: fill 0.3s ease;
+        }
+
+        .social-links a:hover svg {
+            fill: var(--color-primario);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--color-texto-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            
+            h1 { font-size: 2.5rem; }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .cta-button { width: 100%; }
+        }
+    </style>
+        <script type="module">
+    import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
+    inject();
+    </script>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-bar">
+        <a href="#" class="logo">
+            <div class="logo-icon">FO</div>
+            <div class="logo-text">
+                Franco Orrego
+                <span>Tattoo Studio</span>
+            </div>
+        </a>
+        
+        <nav class="nav-menu">
+            <a href="/tattoo.html">Estudio</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <!-- Sistema 3K eliminado temporalmente -->
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <h1><span class="gradient-text">Identidad</span> Que Perdura</h1>
+            <p class="hero-subtitle">Estudio privado en Santiago. Especialistas en proyectos de gran formato para quienes viven bajo sus propias reglas.</p>
+            
+            <div class="cta-group">
+                <a href="/tattoo.html" class="cta-button cta-primary">Cotizar Proyecto</a>
+                <a href="/borrado.html" class="cta-button cta-secondary">Borrar Tatuaje</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICIOS HUB -->
+    <main>
+        <section id="services-hub">
+            <div class="container">
+                <div class="services-hub animate-in">
+                    <!-- Tarjeta Tatuajes Mejorada -->
+                    <a href="/tattoo.html" class="service-card">
+                        <div class="tag-container">
+                            <span class="mini-tag">Arte</span>
+                            <span class="mini-tag">Personalizado</span>
+                        </div>
+                        <div class="service-icon">⚡</div> <!-- Icono Rayo para vibe rock -->
+                        <h3>Tatuajes</h3>
+                        <p>Diseño exclusivo y técnica profesional. Creamos piezas sólidas que envejecen contigo. Especialidad en Blackwork y Realismo.</p>
+                        <span class="service-link">Ver Galería</span>
+                    </a>
+                    
+                    <!-- Tarjeta Borrado -->
+                    <a href="/borrado.html" class="service-card">
+                         <div class="tag-container">
+                            <span class="mini-tag">Tecnología</span>
+                            <span class="mini-tag">Láser</span>
+                        </div>
+                        <div class="service-icon">↺</div>
+                        <h3>Borrado Láser</h3>
+                        <p>¿Cambio de planes? Tecnología avanzada para eliminar o aclarar tatuajes antiguos sin dejar cicatrices. Recupera tu piel.</p>
+                        <span class="service-link">Más Información</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS (Ajustado a 3 columnas) -->
+        <section class="stats-section">
+            <div class="container" style="padding: 60px 0;">
+                <div class="stats-grid animate-in">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Años de Experiencia</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1k+</span>
+                        <span class="stat-label">Proyectos Realizados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4.9</span>
+                        <span class="stat-label">Satisfacción Clientes</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="social-links">
+            <a href="https://www.instagram.com/francoorrego.tattoo" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/>
+                </svg>
+            </a>
+            <a href="https://wa.me/56948713122?text=Hola,%20quiero%20agendar%20una%20cita" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.198.297-.768.967-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.371-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="footer-links">
+            <a href="/tattoo.html">Estudio</a>
+            <a href="/borrado.html">Borrado Láser</a>
+            <a href="/tyc.html">Términos</a>
+            <a href="/politica-privacidad.html">Privacidad</a>
+        </div>
+        
+        <p style="opacity: 0.5; font-size: 0.8rem;">© 2025 Franco Orrego Tattoo Studio</p>
+        <p style="margin-top: 5px; color: white;">Av. Portugal 1322, Santiago</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Efecto Header al hacer scroll
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header-bar');
+                if (window.scrollY > 50) {
+                    header.style.background = 'rgba(5, 5, 6, 0.95)';
+                    header.style.padding = '0.8rem 2rem';
+                } else {
+                    header.style.background = 'rgba(5, 5, 6, 0.8)';
+                    header.style.padding = '1.2rem 2rem';
+                }
+            });
+
+            // Animaciones de entrada
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.style.animationName = 'fadeIn';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Redirecciones 301 — conservan el SEO de las URLs antiguas
+/tattoo.html    /    301
+/tattoo         /    301
+/borrado.html   /    301
+/borrado        /    301
+/index.html     /    301
