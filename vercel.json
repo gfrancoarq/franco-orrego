@@ -1,4 +1,11 @@
 {
   "cleanUrls": true,
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "redirects": [
+    { "source": "/tattoo", "destination": "/", "permanent": true },
+    { "source": "/tattoo.html", "destination": "/", "permanent": true },
+    { "source": "/borrado", "destination": "/", "permanent": true },
+    { "source": "/borrado.html", "destination": "/", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ]
 }
