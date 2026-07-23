@@ -154,6 +154,35 @@ header{
   display:block;font-family:'Pirata One',serif;font-size:34px;
   color:var(--bone);font-weight:400;letter-spacing:.02em;line-height:1.1;
 }
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);
+  gap:clamp(30px,5vw,68px);align-items:center;position:relative;z-index:2;
+}
+.hero-media{margin:0;position:relative}
+.hero-media img{
+  width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--ink-3);
+  filter:grayscale(18%) contrast(1.05);
+  border:1px solid var(--line);outline:1px solid rgba(237,228,211,.07);outline-offset:6px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+}
+.hero-media-cap{
+  position:absolute;left:14px;bottom:0;transform:translateY(50%);
+  background:var(--ink);border:1px solid var(--line);
+  padding:9px 16px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--violet);font-weight:600;
+}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .hero-media{max-width:340px;margin:0 auto}
+  .hero-inner{max-width:none}
+}
+
+/* ——— reveal al hacer scroll ——— */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important}}
+/* sombra del header al hacer scroll */
+header.scrolled{box-shadow:0 12px 34px rgba(0,0,0,.45)}
 
 /* ——— secciones ——— */
 section{padding:96px 0}
@@ -287,6 +316,26 @@ section{padding:96px 0}
   .duo-amp-mark{right:6px;bottom:-26px}
 }
 
+/* ——— testimonios ——— */
+#testimonios{border-bottom:1px solid var(--line)}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.quote{
+  border:1px solid var(--line);outline:1px solid rgba(237,228,211,.07);outline-offset:5px;
+  padding:34px 30px;background:var(--ink-2);display:flex;flex-direction:column;gap:16px;margin:0;
+}
+.quote-mark{font-family:'Pirata One',serif;font-size:54px;color:var(--violet);line-height:.5;height:24px}
+.quote p{font-size:16px;color:var(--bone);font-style:italic}
+.quote-who{margin-top:auto;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.quote-who b{color:var(--violet);display:block;letter-spacing:.12em}
+.proof-bar{
+  display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;justify-content:center;
+  margin-top:48px;padding-top:36px;border-top:1px solid var(--line);
+  font-size:14px;color:var(--dim);letter-spacing:.04em;
+}
+.proof-bar a{color:var(--violet);text-decoration:none;font-weight:600}
+.proof-bar .num{font-family:'Pirata One',serif;font-size:26px;color:var(--bone);margin-right:8px;vertical-align:-2px}
+@media(max-width:820px){.quotes{grid-template-columns:1fr}}
+
 /* ——— agenda ——— */
 #agenda{text-align:center;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
 #agenda .eyebrow{justify-content:center}
@@ -393,20 +442,26 @@ footer{padding:70px 0 46px;text-align:center}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-amp black" aria-hidden="true">&amp;</div>
-  <div class="wrap hero-inner">
-    <div class="hero-est">Estudio privado · Santiago de Chile</div>
-    <h1 class="black">Franco <span class="amp">&amp;</span> Orrego</h1>
-    <p class="claim">Blackwork · Gran formato · Puerta cerrada</p>
-    <p>Un tatuaje no es un gasto: es una <strong>inversión en identidad</strong>, diseñada para envejecer contigo. Tomamos pocos proyectos al mes y los trabajamos uno a la vez, sin apuro y sin público.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-solid" href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20mi%20idea%20de%20tatuaje">Cotiza tu idea</a>
-      <a class="btn btn-ghost" href="#obras">Ver obras</a>
+  <div class="wrap hero-grid">
+    <div class="hero-inner">
+      <div class="hero-est">Estudio privado · Santiago de Chile</div>
+      <h1 class="black">Franco <span class="amp">&amp;</span> Orrego</h1>
+      <p class="claim">Blackwork · Gran formato · Puerta cerrada</p>
+      <p>Un tatuaje no es un gasto: es una <strong>inversión en identidad</strong>, diseñada para envejecer contigo. Tomamos pocos proyectos al mes y los trabajamos uno a la vez, sin apuro y sin público.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="https://wa.me/56948713122?text=Hola,%20quiero%20cotizar%20mi%20idea%20de%20tatuaje">Cotiza tu idea</a>
+        <a class="btn btn-ghost" href="#obras">Ver obras</a>
+      </div>
+      <div class="hero-meta">
+        <div><strong>10+</strong>años de oficio</div>
+        <div><strong>1.000+</strong>proyectos en piel</div>
+        <div><strong>16 mil</strong>en Instagram</div>
+      </div>
     </div>
-    <div class="hero-meta">
-      <div><strong>10+</strong>años de oficio</div>
-      <div><strong>1.000+</strong>proyectos en piel</div>
-      <div><strong>4.9</strong>satisfacción</div>
-    </div>
+    <figure class="hero-media">
+      <img src="assets/IMG_2064.png" alt="Espalda completa ornamental en blackwork, obra del estudio" loading="eager">
+      <figcaption class="hero-media-cap">Espalda completa · Ornamental</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -552,6 +607,40 @@ footer{padding:70px 0 46px;text-align:center}
     </div>
   </div>
 </section>
+
+<!-- TESTIMONIOS — OCULTO hasta pegar citas reales de clientes (Instagram/Google). Para reactivar: borra esta linea, la de abajo y el cierre de comentario al final de la seccion, y reemplaza los textos [REEMPLAZAR]. -->
+<!--
+<section id="testimonios">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Lo que dicen</span>
+      <h2 class="black">No lo decimos nosotros. Lo dice su piel.</h2>
+    </div>
+    <div class="quotes">
+      <blockquote class="quote">
+        <span class="quote-mark" aria-hidden="true">&amp;</span>
+        <p>[REEMPLAZAR: cita real de un cliente]</p>
+        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+      </blockquote>
+      <blockquote class="quote">
+        <span class="quote-mark" aria-hidden="true">&amp;</span>
+        <p>[REEMPLAZAR: cita real de un cliente]</p>
+        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+      </blockquote>
+      <blockquote class="quote">
+        <span class="quote-mark" aria-hidden="true">&amp;</span>
+        <p>[REEMPLAZAR: cita real de un cliente]</p>
+        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+      </blockquote>
+    </div>
+    <div class="proof-bar">
+      <span><span class="num">16 mil</span> en <a href="https://www.instagram.com/francoorrego.tattoo">@francoorrego.tattoo</a></span>
+      <span><span class="num">10+</span> años de oficio</span>
+      <span><span class="num">1.000+</span> proyectos en piel</span>
+    </div>
+  </div>
+</section>
+-->
 
 <!-- AGENDA -->
 <section id="agenda">
@@ -717,6 +806,21 @@ if (mapBtn) mapBtn.addEventListener('click', () => {
   f.allowFullscreen = true;
   document.getElementById('mapBox').replaceChildren(f);
 }, { once: true });
+
+// Reveal al hacer scroll. Progressive enhancement: si el JS no corre, todo queda visible.
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('#obras .sec-head, .gallery, #metodo .sec-head, .steps, #estudio .sec-head, .duo, #agenda .wrap, #faq .sec-head, .faq-list, #ubicacion .sec-head, .loc')
+    .forEach(el => { el.classList.add('reveal'); io.observe(el); });
+}
+
+// Sombra del header al hacer scroll
+const hdr = document.querySelector('header');
+const onScroll = () => { if (hdr) hdr.classList.toggle('scrolled', window.scrollY > 8); };
+onScroll();
+window.addEventListener('scroll', onScroll, { passive: true });
 </script>
 </body>
 </html>
