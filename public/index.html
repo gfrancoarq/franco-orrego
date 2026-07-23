@@ -254,20 +254,22 @@ section{padding:96px 0}
 /* ——— dúo ——— */
 #estudio{background:var(--ink-2);border-bottom:1px solid var(--line);overflow:hidden}
 .duo{
-  display:grid;grid-template-columns:minmax(0,390px) auto minmax(0,390px);
-  gap:clamp(20px,4vw,64px);align-items:start;justify-content:center;
+  display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);
+  gap:clamp(28px,5vw,72px);align-items:start;
 }
-.duo-amp{
-  font-family:'Pirata One',serif;
-  font-size:clamp(120px,17vw,240px);color:var(--violet);line-height:.85;
-  align-self:center;text-align:center;
-  text-shadow:0 0 70px rgba(164,127,214,.45);
-}
-.persona img{
-  aspect-ratio:4/5;object-fit:cover;width:100%;
-  filter:grayscale(35%) contrast(1.04);margin-bottom:24px;background:var(--ink-3);
+.duo-photo{position:relative;margin:0}
+.duo-photo img{
+  aspect-ratio:1/1;object-fit:cover;width:100%;
+  filter:grayscale(35%) contrast(1.04);background:var(--ink-3);
   border:1px solid var(--line);outline:1px solid rgba(237,228,211,.07);outline-offset:5px;
 }
+.duo-amp-mark{
+  position:absolute;right:-8px;bottom:-30px;
+  font-family:'Pirata One',serif;font-size:clamp(88px,10vw,150px);
+  color:var(--violet);line-height:.8;pointer-events:none;user-select:none;
+  text-shadow:0 0 60px rgba(164,127,214,.5);
+}
+.duo-text{display:flex;flex-direction:column;gap:40px;padding-top:6px}
 .persona h3{font-family:'Pirata One',serif;font-size:42px;font-weight:400;letter-spacing:.02em}
 .persona .rol{
   font-size:12px;letter-spacing:.26em;text-transform:uppercase;
@@ -281,8 +283,8 @@ section{padding:96px 0}
 }
 @media(max-width:760px){
   .duo{grid-template-columns:1fr}
-  .duo-amp{order:2;padding:14px 0}
-  .persona.p2{order:3}
+  .duo-photo{max-width:420px;margin:0 auto 24px}
+  .duo-amp-mark{right:6px;bottom:-26px}
 }
 
 /* ——— agenda ——— */
@@ -430,7 +432,8 @@ footer{padding:70px 0 46px;text-align:center}
   </div>
 </section>
 
-<!-- PROCESO EN VIDEO -->
+<!-- PROCESO EN VIDEO — OCULTO hasta tener videos reales. Para reactivar: borra esta linea, la de abajo y el cierre de comentario al final de la seccion. -->
+<!--
 <section id="proceso-video">
   <div class="wrap">
     <div class="sec-head">
@@ -451,6 +454,7 @@ footer{padding:70px 0 46px;text-align:center}
     </div>
   </div>
 </section>
+-->
 
 <!-- MÉTODO -->
 <section id="metodo">
@@ -484,7 +488,8 @@ footer{padding:70px 0 46px;text-align:center}
   </div>
 </section>
 
-<!-- NIVELES DE PROFUNDIDAD -->
+<!-- NIVELES DE PROFUNDIDAD — OCULTO hasta tener imagenes comparativas de 1/2/3 sesiones. Para reactivar: borra esta linea, la de abajo y el cierre de comentario al final de la seccion. -->
+<!--
 <section id="niveles">
   <div class="wrap">
     <div class="sec-head">
@@ -515,6 +520,7 @@ footer{padding:70px 0 46px;text-align:center}
     <p class="lvl-close">Al cotizar te mostramos qué puede llegar a ser tu pieza en cada nivel — con su valor y su calendario. <b>Nosotros te mostramos el camino.</b><span class="firma">Tú decides hasta dónde quieres llegar.</span></p>
   </div>
 </section>
+-->
 
 <!-- EL ESTUDIO / DÚO -->
 <section id="estudio">
@@ -525,20 +531,23 @@ footer{padding:70px 0 46px;text-align:center}
       <p>Franco &amp; Orrego existe porque cada pieza pasa por cuatro manos: las que la crean y las que la ejecutan.</p>
     </div>
     <div class="duo">
-      <div class="persona">
-        <img src="assets/4fotofranco.png" alt="Franco, artista residente del estudio">
-        <h3>Franco</h3>
-        <span class="rol">Artista residente · Ejecuta</span>
-        <p>Arquitecto de formación y tatuador de oficio. Su enfoque fusiona la estética y el equilibrio visual con la fluidez del arte corporal: técnica firme pero suave, con la profundidad justa para una curación impecable y líneas finas perfectas. Las piezas grandes se construyen desde lo minucioso.</p>
-        <div class="tags"><span class="tag">Blackwork</span><span class="tag">Gran formato</span><span class="tag">Arquitecto</span></div>
-      </div>
-      <div class="duo-amp" aria-hidden="true">&amp;</div>
-      <div class="persona p2">
-        <img src="assets/mari-orrego-profile.png" alt="Mari Orrego, directora del estudio y co-creadora">
-        <h3>Mari Orrego</h3>
-        <span class="rol">Directora del estudio · Co-crea</span>
-        <p>Directora técnica certificada en asepsia y antisepsia, responsable de que cada sesión cumpla un protocolo de seguridad riguroso. Y la mitad creativa del estudio: co-crea los diseños, define las ideas y acompaña tu proyecto desde la primera conversación hasta la curación.</p>
-        <div class="tags"><span class="tag">Directora técnica</span><span class="tag">Co-creadora</span><span class="tag">Asepsia certificada</span></div>
+      <figure class="duo-photo">
+        <img src="assets/franco-mari.jpg" alt="Franco y Mari Orrego, el dúo detrás del estudio">
+        <span class="duo-amp-mark black" aria-hidden="true">&amp;</span>
+      </figure>
+      <div class="duo-text">
+        <div class="persona">
+          <h3>Franco</h3>
+          <span class="rol">Artista residente · Ejecuta</span>
+          <p>Arquitecto de formación y tatuador de oficio. Su enfoque fusiona la estética y el equilibrio visual con la fluidez del arte corporal: técnica firme pero suave, con la profundidad justa para una curación impecable y líneas finas perfectas. Las piezas grandes se construyen desde lo minucioso.</p>
+          <div class="tags"><span class="tag">Blackwork</span><span class="tag">Gran formato</span><span class="tag">Arquitecto</span></div>
+        </div>
+        <div class="persona">
+          <h3>Mari Orrego</h3>
+          <span class="rol">Directora del estudio · Co-crea</span>
+          <p>Directora técnica certificada en asepsia y antisepsia, responsable de que cada sesión cumpla un protocolo de seguridad riguroso. Y la mitad creativa del estudio: co-crea los diseños, define las ideas y acompaña tu proyecto desde la primera conversación hasta la curación.</p>
+          <div class="tags"><span class="tag">Directora técnica</span><span class="tag">Co-creadora</span><span class="tag">Asepsia certificada</span></div>
+        </div>
       </div>
     </div>
   </div>
