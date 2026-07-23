@@ -453,7 +453,7 @@ footer{padding:70px 0 46px;text-align:center}
         <a class="btn btn-ghost" href="#obras">Ver obras</a>
       </div>
       <div class="hero-meta">
-        <div><strong>10+</strong>años de oficio</div>
+        <div><strong>2005</strong>tatuando desde</div>
         <div><strong>1.000+</strong>proyectos en piel</div>
         <div><strong>16 mil</strong>en Instagram</div>
       </div>
@@ -608,39 +608,38 @@ footer{padding:70px 0 46px;text-align:center}
   </div>
 </section>
 
-<!-- TESTIMONIOS — OCULTO hasta pegar citas reales de clientes (Instagram/Google). Para reactivar: borra esta linea, la de abajo y el cierre de comentario al final de la seccion, y reemplaza los textos [REEMPLAZAR]. -->
-<!--
+<!-- TESTIMONIOS -->
 <section id="testimonios">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Lo que dicen</span>
       <h2 class="black">No lo decimos nosotros. Lo dice su piel.</h2>
+      <p>Comentarios reales de clientes en nuestro Instagram, tras su sesión.</p>
     </div>
     <div class="quotes">
       <blockquote class="quote">
         <span class="quote-mark" aria-hidden="true">&amp;</span>
-        <p>[REEMPLAZAR: cita real de un cliente]</p>
-        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+        <p>Ahora que cicatrizó se ve aún más espectacular. Mil gracias por todo.</p>
+        <span class="quote-who"><b>@alexa_hormann</b>Escarabajo geométrico · brazo</span>
       </blockquote>
       <blockquote class="quote">
         <span class="quote-mark" aria-hidden="true">&amp;</span>
-        <p>[REEMPLAZAR: cita real de un cliente]</p>
-        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+        <p>Hermoso quedó, y en esa zona jamás lo imaginé.</p>
+        <span class="quote-who"><b>@jois_ita</b>Dragón y koi · espalda</span>
       </blockquote>
       <blockquote class="quote">
         <span class="quote-mark" aria-hidden="true">&amp;</span>
-        <p>[REEMPLAZAR: cita real de un cliente]</p>
-        <span class="quote-who"><b>Nombre o @usuario</b>Pieza · zona del cuerpo</span>
+        <p>¡Gracias! Me encantó.</p>
+        <span class="quote-who"><b>@conyvr</b>Retrato · brazo</span>
       </blockquote>
     </div>
     <div class="proof-bar">
       <span><span class="num">16 mil</span> en <a href="https://www.instagram.com/francoorrego.tattoo">@francoorrego.tattoo</a></span>
-      <span><span class="num">10+</span> años de oficio</span>
+      <span><span class="num">2005</span> tatuando desde</span>
       <span><span class="num">1.000+</span> proyectos en piel</span>
     </div>
   </div>
 </section>
--->
 
 <!-- AGENDA -->
 <section id="agenda">
@@ -812,7 +811,7 @@ if ('IntersectionObserver' in window) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('#obras .sec-head, .gallery, #metodo .sec-head, .steps, #estudio .sec-head, .duo, #agenda .wrap, #faq .sec-head, .faq-list, #ubicacion .sec-head, .loc')
+  document.querySelectorAll('#obras .sec-head, .gallery, #metodo .sec-head, .steps, #estudio .sec-head, .duo, #testimonios .sec-head, .quotes, #agenda .wrap, #faq .sec-head, .faq-list, #ubicacion .sec-head, .loc')
     .forEach(el => { el.classList.add('reveal'); io.observe(el); });
 }
 
